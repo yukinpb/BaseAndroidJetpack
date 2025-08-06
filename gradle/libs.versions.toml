@@ -1,5 +1,7 @@
 [versions]
+accompanistSystemuicontroller = "0.32.0"
 agp = "8.8.2"
+composeColorfulSliders = "1.2.2"
 converterGson = "2.9.0"
 hiltNavigationCompose = "1.2.0"
 kotlin = "2.0.0"
@@ -23,10 +25,12 @@ retrofit = "2.9.0"
 composeDestinations = "2.2.0"
 
 [libraries]
+accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
+compose-colorful-sliders = { module = "com.github.SmartToolFactory:Compose-Colorful-Sliders", version.ref = "composeColorfulSliders" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }

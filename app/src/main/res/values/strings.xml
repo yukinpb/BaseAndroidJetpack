@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">BaseProject</string>
+    <string name="flashlight">Flashlight</string>
+    <string name="flash_alert">Flash Alert</string>
+    <string name="camera">Camera</string>
+    <string name="led_screen">LED Screen</string>
+    <string name="please_select_a_mode_first">Please select a mode first</string>
+    <string name="flashing_speed">Flashing speed</string>
 </resources>

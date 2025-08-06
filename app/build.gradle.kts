@@ -7,11 +7,11 @@ plugins {
 }
 
 android {
-    namespace = "com.basecompose.baseproject"
+    namespace = "com.flashlight.flashalert.oncall.sms"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.basecompose.baseproject"
+        applicationId = "com.flashlight.flashalert.oncall.sms"
         minSdk = 24
         targetSdk = 36
         versionCode = 1
@@ -81,4 +81,9 @@ dependencies {
     implementation(libs.compose.destinations.core)
     ksp(libs.compose.destinations.ksp)
     implementation(libs.compose.destinations.bottom.sheet)
+    
+    // System UI Controller
+    implementation(libs.accompanist.systemuicontroller)
+
+    implementation(libs.compose.colorful.sliders)
 }
