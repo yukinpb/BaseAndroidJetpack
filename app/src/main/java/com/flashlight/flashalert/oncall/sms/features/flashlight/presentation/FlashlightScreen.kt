@@ -1,5 +1,8 @@
 package com.flashlight.flashalert.oncall.sms.features.flashlight.presentation
 
+import android.Manifest
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -21,6 +24,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,6 +39,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flashlight.flashalert.oncall.sms.R
@@ -46,14 +52,30 @@ import com.flashlight.flashalert.oncall.sms.features.flashlight.viewmodel.Flashl
 import com.flashlight.flashalert.oncall.sms.ui.theme.InterFontFamily
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.CompassScreenDestination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
 @Destination<RootGraph>(start = true)
 fun FlashlightScreen(
     modifier: Modifier = Modifier,
-    viewModel: FlashlightViewModel = hiltViewModel()
+    viewModel: FlashlightViewModel = hiltViewModel(),
+    navigator: DestinationsNavigator
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
+    val locationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions()
+    ) { permissions ->
+        val fineLocationGranted = permissions[Manifest.permission.ACCESS_FINE_LOCATION] ?: false
+        val coarseLocationGranted = permissions[Manifest.permission.ACCESS_COARSE_LOCATION] ?: false
+        
+        if (fineLocationGranted || coarseLocationGranted) {
+            // Navigate to compass screen
+            navigator.navigate(CompassScreenDestination)
+        }
+    }
 
     DisposableEffect(Unit) {
         viewModel.startListening()
@@ -112,7 +134,29 @@ fun FlashlightScreen(
             // Compass
             CompassComponent(
                 angle = state.compassAngle,
-                modifier = Modifier.wrapContentHeight()
+                modifier = Modifier.wrapContentHeight(),
+                onClick = {
+                    val fineLocationPermission = ContextCompat.checkSelfPermission(
+                        context, Manifest.permission.ACCESS_FINE_LOCATION
+                    )
+                    val coarseLocationPermission = ContextCompat.checkSelfPermission(
+                        context, Manifest.permission.ACCESS_COARSE_LOCATION
+                    )
+                    
+                    if (fineLocationPermission == android.content.pm.PackageManager.PERMISSION_GRANTED ||
+                        coarseLocationPermission == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                        // Navigate to compass screen
+                        navigator.navigate(CompassScreenDestination)
+                    } else {
+                        // Request location permissions
+                        locationPermissionLauncher.launch(
+                            arrayOf(
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION
+                            )
+                        )
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.height(32.dp))

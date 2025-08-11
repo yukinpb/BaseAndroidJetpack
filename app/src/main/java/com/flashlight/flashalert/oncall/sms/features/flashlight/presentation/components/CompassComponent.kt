@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -54,7 +55,8 @@ private fun getDirectionText(angle: Float): String {
 @Composable
 fun CompassComponent(
     angle: Float,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
 ) {
     var previousAngle by remember { mutableFloatStateOf(angle) }
     val adjustedAngle = remember(angle) {
@@ -68,7 +70,7 @@ fun CompassComponent(
         label = "CompassRotation"
     )
     Column(
-        modifier = modifier,
+        modifier = modifier.clickable { onClick() },
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Box(
