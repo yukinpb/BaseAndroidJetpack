@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,6 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flashlight.flashalert.oncall.sms.R
+import com.flashlight.flashalert.oncall.sms.core.utils.clickableWithoutIndication
 import com.flashlight.flashalert.oncall.sms.features.compass.presentation.components.CompassDialComponent
 import com.flashlight.flashalert.oncall.sms.features.compass.presentation.components.GoogleMapView
 import com.flashlight.flashalert.oncall.sms.features.compass.viewmodel.CompassViewModel
@@ -95,8 +97,10 @@ fun CompassScreen(
                     contentDescription = "Back",
                     modifier = Modifier
                         .size(24.dp)
-                        .clickable { navigator.popBackStack() }
+                        .clickableWithoutIndication { navigator.popBackStack() }
                 )
+
+                Spacer(modifier = Modifier.width(16.dp))
 
                 Text(
                     text = "Compass",

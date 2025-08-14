@@ -16,4 +16,7 @@ object Constants {
     const val NETWORK_ERROR = "Network error occurred"
     const val UNKNOWN_ERROR = "An unknown error occurred"
     const val TIMEOUT_ERROR = "Request timeout"
+
+    const val MIN_SPEED_FLASH = 100f
+    const val MAX_SPEED_FLASH = 2000f
 } 
