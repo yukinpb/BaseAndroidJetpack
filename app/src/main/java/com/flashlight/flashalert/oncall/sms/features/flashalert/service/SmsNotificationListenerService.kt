@@ -6,6 +6,8 @@ import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import com.flashlight.flashalert.oncall.sms.core.utils.SharedPrefs
+import com.flashlight.flashalert.oncall.sms.core.utils.AdvancedSettingsChecker
+import com.flashlight.flashalert.oncall.sms.core.utils.FlashType
 
 class SmsNotificationListenerService : NotificationListenerService() {
 
@@ -15,6 +17,8 @@ class SmsNotificationListenerService : NotificationListenerService() {
 
         fun isServiceRunning(): Boolean = isServiceRunning
     }
+
+    private val advancedSettingsChecker by lazy { AdvancedSettingsChecker(this) }
 
     override fun onCreate() {
         super.onCreate()
@@ -34,9 +38,11 @@ class SmsNotificationListenerService : NotificationListenerService() {
         // Check if this is an SMS notification
         if (isSmsNotification(sbn)) {
             Log.d(TAG, "SMS notification detected")
-            if (SharedPrefs.smsFlashEnabled) {
+            if (SharedPrefs.smsFlashEnabled && advancedSettingsChecker.shouldFlashBeEnabled(FlashType.SMS)) {
                 // Notify the main FlashAlertService about SMS detection
                 notifyMainService()
+            } else {
+                Log.d(TAG, "Flash disabled for SMS due to advanced settings")
             }
         }
     }

@@ -19,8 +19,12 @@ import com.flashlight.flashalert.oncall.sms.R
 import com.flashlight.flashalert.oncall.sms.core.ui.components.bottombar.CustomBottomNavigation
 import com.ramcosta.composedestinations.DestinationsNavHost
 import com.ramcosta.composedestinations.generated.NavGraphs
+import com.ramcosta.composedestinations.generated.destinations.AdvancedSettingsScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.AppNotificationScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.AppSelectionScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CompassScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.IncomingCallScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.SmsMessageScreenDestination
 import com.ramcosta.composedestinations.utils.currentDestinationAsState
 
 @Composable
@@ -30,6 +34,15 @@ fun MainScreen(
     val navController = rememberNavController()
     val currentDestination by navController.currentDestinationAsState()
 
+    val listDestinationNotVisibleBottomBar = listOf(
+        CompassScreenDestination,
+        AppSelectionScreenDestination,
+        AdvancedSettingsScreenDestination,
+        IncomingCallScreenDestination,
+        SmsMessageScreenDestination,
+        AppNotificationScreenDestination,
+    )
+
     Box {
         DestinationsNavHost(
             navController = navController,
@@ -37,7 +50,7 @@ fun MainScreen(
         )
 
         AnimatedVisibility(
-            visible = currentDestination != CompassScreenDestination && currentDestination != AppSelectionScreenDestination,
+            visible = currentDestination !in listDestinationNotVisibleBottomBar,
             exit = fadeOut(animationSpec = tween(300)) + slideOutVertically(
                 animationSpec = tween(300),
                 targetOffsetY = { it }

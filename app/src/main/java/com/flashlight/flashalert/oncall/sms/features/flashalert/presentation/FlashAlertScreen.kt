@@ -37,6 +37,7 @@ import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.IncomingCallScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SmsMessageScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.AppNotificationScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.AdvancedSettingsScreenDestination
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
@@ -241,7 +242,9 @@ fun FlashAlertScreen(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable { /* TODO: Open advanced settings */ }
+                        .clickable { 
+                            navigator.navigate(AdvancedSettingsScreenDestination)
+                        }
                         .padding(12.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {

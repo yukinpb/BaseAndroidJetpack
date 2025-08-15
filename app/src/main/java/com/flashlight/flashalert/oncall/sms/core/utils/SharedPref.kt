@@ -26,6 +26,17 @@ private const val KEY_APP_NOTIFICATION_FLASH_TIMES = "app_notification_flash_tim
 private const val KEY_APP_NOTIFICATION_FLASH_SPEED = "app_notification_flash_speed"
 private const val KEY_SELECTED_APP_PACKAGES = "selected_app_packages"
 
+// Advanced Settings
+private const val KEY_DISABLE_WHEN_PHONE_IN_USE = "disable_when_phone_in_use"
+private const val KEY_BATTERY_SAVER_ENABLED = "battery_saver_enabled"
+private const val KEY_BATTERY_THRESHOLD = "battery_threshold"
+private const val KEY_TIME_TO_FLASH_OFF_ENABLED = "time_to_flash_off_enabled"
+private const val KEY_TIME_FROM = "time_from"
+private const val KEY_TIME_TO = "time_to"
+private const val KEY_ENABLE_FLASH_IN_RINGTONE_MODE = "enable_flash_in_ringtone_mode"
+private const val KEY_ENABLE_FLASH_IN_VIBRATE_MODE = "enable_flash_in_vibrate_mode"
+private const val KEY_ENABLE_FLASH_IN_MUTE_MODE = "enable_flash_in_mute_mode"
+
 object SharedPrefs {
     private lateinit var editor: SharedPreferences.Editor
     private lateinit var prefs: SharedPreferences
@@ -147,6 +158,70 @@ object SharedPrefs {
         get() = prefs.getStringSet(KEY_SELECTED_APP_PACKAGES, emptySet()) ?: emptySet()
         set(value) {
             editor.putStringSet(KEY_SELECTED_APP_PACKAGES, value).commit()
+            editor.apply()
+        }
+
+    // Advanced Settings
+    var disableWhenPhoneInUse: Boolean
+        get() = prefs.getBoolean(KEY_DISABLE_WHEN_PHONE_IN_USE, true)
+        set(value) {
+            editor.putBoolean(KEY_DISABLE_WHEN_PHONE_IN_USE, value).commit()
+            editor.apply()
+        }
+
+    var batterySaverEnabled: Boolean
+        get() = prefs.getBoolean(KEY_BATTERY_SAVER_ENABLED, true)
+        set(value) {
+            editor.putBoolean(KEY_BATTERY_SAVER_ENABLED, value).commit()
+            editor.apply()
+        }
+
+    var batteryThreshold: Int
+        get() = prefs.getInt(KEY_BATTERY_THRESHOLD, 30)
+        set(value) {
+            editor.putInt(KEY_BATTERY_THRESHOLD, value).commit()
+            editor.apply()
+        }
+
+    var timeToFlashOffEnabled: Boolean
+        get() = prefs.getBoolean(KEY_TIME_TO_FLASH_OFF_ENABLED, true)
+        set(value) {
+            editor.putBoolean(KEY_TIME_TO_FLASH_OFF_ENABLED, value).commit()
+            editor.apply()
+        }
+
+    var timeFrom: String
+        get() = prefs.getString(KEY_TIME_FROM, "00:00") ?: "00:00"
+        set(value) {
+            editor.putString(KEY_TIME_FROM, value).commit()
+            editor.apply()
+        }
+
+    var timeTo: String
+        get() = prefs.getString(KEY_TIME_TO, "00:00") ?: "00:00"
+        set(value) {
+            editor.putString(KEY_TIME_TO, value).commit()
+            editor.apply()
+        }
+
+    var enableFlashInRingtoneMode: Boolean
+        get() = prefs.getBoolean(KEY_ENABLE_FLASH_IN_RINGTONE_MODE, true)
+        set(value) {
+            editor.putBoolean(KEY_ENABLE_FLASH_IN_RINGTONE_MODE, value).commit()
+            editor.apply()
+        }
+
+    var enableFlashInVibrateMode: Boolean
+        get() = prefs.getBoolean(KEY_ENABLE_FLASH_IN_VIBRATE_MODE, true)
+        set(value) {
+            editor.putBoolean(KEY_ENABLE_FLASH_IN_VIBRATE_MODE, value).commit()
+            editor.apply()
+        }
+
+    var enableFlashInMuteMode: Boolean
+        get() = prefs.getBoolean(KEY_ENABLE_FLASH_IN_MUTE_MODE, true)
+        set(value) {
+            editor.putBoolean(KEY_ENABLE_FLASH_IN_MUTE_MODE, value).commit()
             editor.apply()
         }
 }

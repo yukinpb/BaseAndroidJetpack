@@ -16,6 +16,8 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.flashlight.flashalert.oncall.sms.R
 import com.flashlight.flashalert.oncall.sms.core.utils.SharedPrefs
+import com.flashlight.flashalert.oncall.sms.core.utils.AdvancedSettingsChecker
+import com.flashlight.flashalert.oncall.sms.core.utils.FlashType
 import com.flashlight.flashalert.oncall.sms.features.flashalert.viewmodel.BlinkMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -48,6 +50,7 @@ class FlashAlertService : Service() {
 
     private var phoneStateListener: PhoneStateListener? = null
     private var telephonyManager: TelephonyManager? = null
+    private val advancedSettingsChecker by lazy { AdvancedSettingsChecker(this) }
     private var incomingCallFlashJob: Job? = null
     private var smsFlashJob: Job? = null
     private var appNotificationFlashJob: Job? = null
@@ -132,7 +135,7 @@ class FlashAlertService : Service() {
                 when (state) {
                     TelephonyManager.CALL_STATE_RINGING -> {
                         Log.d(TAG, "Incoming call detected")
-                        if (SharedPrefs.incomingCallFlashEnabled) {
+                        if (SharedPrefs.incomingCallFlashEnabled && advancedSettingsChecker.shouldFlashBeEnabled(FlashType.INCOMING_CALL)) {
                             startIncomingCallFlash()
                         }
                     }
@@ -166,7 +169,7 @@ class FlashAlertService : Service() {
     // Function to be called from SmsNotificationListenerService
     fun onSmsDetected() {
         Log.d(TAG, "SMS detected from notification listener")
-        if (SharedPrefs.smsFlashEnabled) {
+        if (SharedPrefs.smsFlashEnabled && advancedSettingsChecker.shouldFlashBeEnabled(FlashType.SMS)) {
             startSmsFlash()
         }
     }
@@ -174,7 +177,7 @@ class FlashAlertService : Service() {
     // Function to be called from AppNotificationListenerService
     fun onAppNotificationDetected(packageName: String?) {
         Log.d(TAG, "App notification detected from notification listener: $packageName")
-        if (SharedPrefs.appNotificationFlashEnabled) {
+        if (SharedPrefs.appNotificationFlashEnabled && advancedSettingsChecker.shouldFlashBeEnabled(FlashType.APP_NOTIFICATION)) {
             startAppNotificationFlash()
         }
     }

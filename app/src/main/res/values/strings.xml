@@ -39,4 +39,19 @@
     <string name="other_applications">Other Applications</string>
     <string name="please_enable_flash_for_app_notifications_first">Please enable flash for app notifications first.</string>
     <string name="loading_applications">Loading applications...</string>
+    <string name="disable_when_phone_in_use">Disable when phone is in use</string>
+    <string name="battery_saver_schedule">Battery saver schedule</string>
+    <string name="turn_off_if_battery_below">Turn off if battery is below</string>
+    <string name="time_to_flash_off">Time to flash off</string>
+    <string name="select_downtime_to_disable_flash_alert">Select downtime to disable flash alert</string>
+    <string name="enable_flash_in_mode">Enable Flash in mode</string>
+    <string name="ringtone">Ringtone</string>
+    <string name="vibrate">Vibrate</string>
+    <string name="mute">Mute</string>
+    <string name="reset_to_default">Reset to Default</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="select_time">Select Time</string>
+    <string name="hour">Hour</string>
+    <string name="minute">Minute</string>
 </resources>

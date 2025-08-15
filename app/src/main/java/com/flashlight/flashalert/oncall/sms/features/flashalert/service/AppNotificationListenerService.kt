@@ -5,6 +5,8 @@ import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
 import android.util.Log
 import com.flashlight.flashalert.oncall.sms.core.utils.SharedPrefs
+import com.flashlight.flashalert.oncall.sms.core.utils.AdvancedSettingsChecker
+import com.flashlight.flashalert.oncall.sms.core.utils.FlashType
 
 class AppNotificationListenerService : NotificationListenerService() {
 
@@ -14,6 +16,8 @@ class AppNotificationListenerService : NotificationListenerService() {
 
         fun isServiceRunning(): Boolean = isServiceRunning
     }
+
+    private val advancedSettingsChecker by lazy { AdvancedSettingsChecker(this) }
 
     override fun onCreate() {
         super.onCreate()
@@ -35,9 +39,11 @@ class AppNotificationListenerService : NotificationListenerService() {
         // Check if this is a notification from a selected app
         if (isSelectedAppNotification(sbn)) {
             Log.d(TAG, "Selected app notification detected from: ${sbn.packageName}")
-            if (SharedPrefs.appNotificationFlashEnabled) {
+            if (SharedPrefs.appNotificationFlashEnabled && advancedSettingsChecker.shouldFlashBeEnabled(FlashType.APP_NOTIFICATION)) {
                 // Notify the main FlashAlertService about app notification detection
                 notifyMainService(sbn.packageName)
+            } else {
+                Log.d(TAG, "Flash disabled for app notification due to advanced settings")
             }
         }
     }
@@ -45,13 +51,13 @@ class AppNotificationListenerService : NotificationListenerService() {
     private fun isSelectedAppNotification(sbn: StatusBarNotification): Boolean {
         val packageName = sbn.packageName
         val selectedPackages = SharedPrefs.selectedAppPackages
-        
+
         // Check if this notification is from a selected app
         if (selectedPackages.contains(packageName)) {
             Log.d(TAG, "Notification from selected app: $packageName")
             return true
         }
-        
+
         Log.d(TAG, "Not a selected app notification from: $packageName")
         return false
     }
