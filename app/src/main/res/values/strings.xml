@@ -54,4 +54,6 @@
     <string name="select_time">Select Time</string>
     <string name="hour">Hour</string>
     <string name="minute">Minute</string>
+    <string name="on">ON</string>
+    <string name="off">OFF</string>
 </resources>

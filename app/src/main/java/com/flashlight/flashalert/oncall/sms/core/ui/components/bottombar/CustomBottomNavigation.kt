@@ -1,5 +1,10 @@
 package com.flashlight.flashalert.oncall.sms.core.ui.components.bottombar
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -33,11 +39,13 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.core.content.ContextCompat
 import androidx.navigation.NavController
 import com.flashlight.flashalert.oncall.sms.R
 import com.flashlight.flashalert.oncall.sms.ui.theme.InterFontFamily
 import com.flashlight.flashalert.oncall.sms.ui.theme.gradientBrush
 import com.ramcosta.composedestinations.generated.NavGraphs
+import com.ramcosta.composedestinations.generated.destinations.CameraScreenDestination
 import com.ramcosta.composedestinations.utils.isRouteOnBackStackAsState
 import com.ramcosta.composedestinations.utils.rememberDestinationsNavigator
 
@@ -50,6 +58,24 @@ fun CustomBottomNavigation(
     modifier: Modifier = Modifier
 ) {
     val navigator = navController.rememberDestinationsNavigator()
+    val context = LocalContext.current
+
+    // Permission launcher for camera
+    val cameraPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            // Permission granted, navigate to camera
+            navigator.navigate(CameraScreenDestination)
+        } else {
+            // Permission denied, show toast
+            Toast.makeText(
+                context,
+                "Camera permission is required to access camera features",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
 
     Box(
         modifier = modifier
@@ -98,13 +124,24 @@ fun CustomBottomNavigation(
                             return@BottomNavItem
                         }
 
-                        navigator.navigate(destination.direction) {
-                            popUpTo(NavGraphs.root) {
-                                saveState = true
+                        // Check camera permission for CameraScreenDestination
+                        if (destination.direction == CameraScreenDestination) {
+                            if (ContextCompat.checkSelfPermission(
+                                    context,
+                                    Manifest.permission.CAMERA
+                                ) == PackageManager.PERMISSION_GRANTED) {
+                                navigator.navigate(CameraScreenDestination)
+                            } else {
+                                // Request camera permission
+                                cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+                                return@BottomNavItem
                             }
-
-                            launchSingleTop = true
-                            restoreState = true
+                        } else {
+                            navigator.navigate(destination.direction) {
+                                popUpTo(NavGraphs.root) {
+                                    saveState = true
+                                }
+                            }
                         }
                     },
                     modifier = Modifier.weight(1f)

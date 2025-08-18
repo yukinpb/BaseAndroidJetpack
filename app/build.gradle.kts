@@ -90,4 +90,11 @@ dependencies {
     // Google Maps
     implementation(libs.play.services.maps)
     implementation(libs.play.services.location)
+
+    implementation(libs.androidx.camera.core)
+    implementation(libs.androidx.camera.camera2)
+    implementation(libs.androidx.camera.lifecycle)
+    implementation(libs.androidx.camera.view)
+
+    implementation("io.coil-kt.coil3:coil-compose:3.0.0")
 }
