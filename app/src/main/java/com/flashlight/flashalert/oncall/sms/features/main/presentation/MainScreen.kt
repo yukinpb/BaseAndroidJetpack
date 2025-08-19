@@ -25,6 +25,7 @@ import com.ramcosta.composedestinations.generated.destinations.AppSelectionScree
 import com.ramcosta.composedestinations.generated.destinations.CameraScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.CompassScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.IncomingCallScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LedScreenScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.SmsMessageScreenDestination
 import com.ramcosta.composedestinations.utils.currentDestinationAsState
 
@@ -43,6 +44,7 @@ fun MainScreen(
         SmsMessageScreenDestination,
         AppNotificationScreenDestination,
         CameraScreenDestination,
+        LedScreenScreenDestination
     )
 
     Box {

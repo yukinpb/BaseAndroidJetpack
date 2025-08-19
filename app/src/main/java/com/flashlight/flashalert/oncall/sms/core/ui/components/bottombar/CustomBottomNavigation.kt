@@ -46,6 +46,7 @@ import com.flashlight.flashalert.oncall.sms.ui.theme.InterFontFamily
 import com.flashlight.flashalert.oncall.sms.ui.theme.gradientBrush
 import com.ramcosta.composedestinations.generated.NavGraphs
 import com.ramcosta.composedestinations.generated.destinations.CameraScreenDestination
+import com.ramcosta.composedestinations.generated.destinations.LedScreenScreenDestination
 import com.ramcosta.composedestinations.utils.isRouteOnBackStackAsState
 import com.ramcosta.composedestinations.utils.rememberDestinationsNavigator
 
@@ -129,13 +130,16 @@ fun CustomBottomNavigation(
                             if (ContextCompat.checkSelfPermission(
                                     context,
                                     Manifest.permission.CAMERA
-                                ) == PackageManager.PERMISSION_GRANTED) {
+                                ) == PackageManager.PERMISSION_GRANTED
+                            ) {
                                 navigator.navigate(CameraScreenDestination)
                             } else {
                                 // Request camera permission
                                 cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
                                 return@BottomNavItem
                             }
+                        } else if (destination.direction == LedScreenScreenDestination) {
+                            navigator.navigate(LedScreenScreenDestination)
                         } else {
                             navigator.navigate(destination.direction) {
                                 popUpTo(NavGraphs.root) {

@@ -37,6 +37,10 @@ private const val KEY_ENABLE_FLASH_IN_RINGTONE_MODE = "enable_flash_in_ringtone_
 private const val KEY_ENABLE_FLASH_IN_VIBRATE_MODE = "enable_flash_in_vibrate_mode"
 private const val KEY_ENABLE_FLASH_IN_MUTE_MODE = "enable_flash_in_mute_mode"
 
+// LED Screen Settings
+private const val KEY_LED_SCREEN_COLOR = "led_screen_color"
+private const val KEY_LED_SCREEN_BRIGHTNESS = "led_screen_brightness"
+
 object SharedPrefs {
     private lateinit var editor: SharedPreferences.Editor
     private lateinit var prefs: SharedPreferences
@@ -222,6 +226,21 @@ object SharedPrefs {
         get() = prefs.getBoolean(KEY_ENABLE_FLASH_IN_MUTE_MODE, true)
         set(value) {
             editor.putBoolean(KEY_ENABLE_FLASH_IN_MUTE_MODE, value).commit()
+            editor.apply()
+        }
+
+    // LED Screen Settings
+    var ledScreenColor: String
+        get() = prefs.getString(KEY_LED_SCREEN_COLOR, "FFFFFFFF") ?: "FFFFFFFF"
+        set(value) {
+            editor.putString(KEY_LED_SCREEN_COLOR, value).commit()
+            editor.apply()
+        }
+
+    var ledScreenBrightness: Float
+        get() = prefs.getFloat(KEY_LED_SCREEN_BRIGHTNESS, 1.0f)
+        set(value) {
+            editor.putFloat(KEY_LED_SCREEN_BRIGHTNESS, value).commit()
             editor.apply()
         }
 }
