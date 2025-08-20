@@ -1,6 +1,5 @@
 package com.flashlight.flashalert.oncall.sms.features.ledscreen.presentation.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Box
@@ -73,7 +72,6 @@ fun ColorSliderComponent(
                     with(density) {
                         sliderWidth = (size.width.toDp() - 24.dp).value
                     }
-                    Log.d("hainv", "ColorSliderComponent: $sliderWidth")
                 }
         )
 
@@ -147,11 +145,15 @@ private fun interpolateColor(color1: Color, color2: Color, fraction: Float): Col
     )
 }
 
-private fun calculateInitialOffset(initialColor: Color, colors: List<Color>, sliderWidth: Float): Float {
+private fun calculateInitialOffset(
+    initialColor: Color,
+    colors: List<Color>,
+    sliderWidth: Float
+): Float {
     // Find the closest color in our predefined list
     var minDistance = Float.MAX_VALUE
     var closestIndex = 0
-    
+
     for (i in colors.indices) {
         val distance = calculateColorDistance(initialColor, colors[i])
         if (distance < minDistance) {
@@ -159,7 +161,7 @@ private fun calculateInitialOffset(initialColor: Color, colors: List<Color>, sli
             closestIndex = i
         }
     }
-    
+
     // Calculate position based on closest color index
     val progress = closestIndex.toFloat() / (colors.size - 1)
     return progress * sliderWidth
@@ -169,10 +171,10 @@ private fun calculateColorDistance(color1: Color, color2: Color): Float {
     val r1 = color1.red
     val g1 = color1.green
     val b1 = color1.blue
-    
+
     val r2 = color2.red
     val g2 = color2.green
     val b2 = color2.blue
-    
+
     return kotlin.math.sqrt((r1 - r2) * (r1 - r2) + (g1 - g2) * (g1 - g2) + (b1 - b2) * (b1 - b2))
 }

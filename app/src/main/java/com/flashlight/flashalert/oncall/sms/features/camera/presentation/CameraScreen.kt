@@ -3,6 +3,7 @@ package com.flashlight.flashalert.oncall.sms.features.camera.presentation
 import android.Manifest
 import android.content.pm.PackageManager
 import android.os.Build
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.view.PreviewView
@@ -53,6 +54,7 @@ import com.flashlight.flashalert.oncall.sms.features.camera.presentation.compone
 import com.flashlight.flashalert.oncall.sms.features.camera.viewmodel.CameraEvent
 import com.flashlight.flashalert.oncall.sms.features.camera.viewmodel.CameraViewModel
 import com.flashlight.flashalert.oncall.sms.ui.theme.InterFontFamily
+import com.flashlight.flashalert.oncall.sms.utils.AdsUtils
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -67,6 +69,7 @@ fun CameraScreen(
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val activity = LocalActivity.current
 
     // Permission launcher for storage permissions
     val storagePermissionLauncher = rememberLauncherForActivityResult(
@@ -172,7 +175,19 @@ fun CameraScreen(
                     contentDescription = "Back",
                     modifier = Modifier
                         .size(24.dp)
-                        .clickableWithoutIndication { navigator.navigateUp() }
+                        .clickableWithoutIndication {
+                            if (activity != null) {
+                                AdsUtils.loadAndDisplayInter(
+                                    context = activity,
+                                    adUnitId = activity.getString(R.string.inter_inapp),
+                                    onNextAction = {
+                                        navigator.popBackStack()
+                                    }
+                                )
+                            } else {
+                                navigator.popBackStack()
+                            }
+                        }
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(

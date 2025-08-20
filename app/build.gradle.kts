@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.android.hilt)
+    alias(libs.plugins.google.gms.google.services)
+    alias(libs.plugins.google.firebase.crashlytics)
 }
 
 android {
@@ -38,6 +40,8 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
+        dataBinding = true
     }
 }
 
@@ -51,6 +55,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.lifecycle.process)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -96,5 +101,28 @@ dependencies {
     implementation(libs.androidx.camera.lifecycle)
     implementation(libs.androidx.camera.view)
 
-    implementation("io.coil-kt.coil3:coil-compose:3.0.0")
+    implementation(libs.coil.compose)
+
+    // FIREBASE
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics.ktx)
+    implementation(libs.firebase.crashlytics.ktx)
+    implementation(libs.firebase.config.ktx)
+
+    // AdMob
+    implementation(libs.ads.advance.lib)
+    implementation(libs.play.services.ads)
+    implementation(libs.androidx.multidex)
+
+    // Facebook ads
+    implementation(libs.facebook.android.sdk)
+    implementation(libs.facebook)
+
+    implementation(libs.shimmer)
+    implementation(libs.lottie)
+
+    implementation(libs.ssp.android)
+    implementation(libs.sdp.android)
+
+    implementation(libs.androidx.constraintlayout)
 }

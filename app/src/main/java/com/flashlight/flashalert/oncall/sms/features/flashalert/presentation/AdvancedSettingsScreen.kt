@@ -1,5 +1,6 @@
 package com.flashlight.flashalert.oncall.sms.features.flashalert.presentation
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +17,6 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,7 +30,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -38,7 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.flashlight.flashalert.oncall.sms.R
-import com.flashlight.flashalert.oncall.sms.core.ui.components.CustomSlider
+import com.flashlight.flashalert.oncall.sms.ads.NativeAdNoMedia
 import com.flashlight.flashalert.oncall.sms.core.utils.clickableWithoutIndication
 import com.flashlight.flashalert.oncall.sms.features.flashalert.presentation.components.BatterySaverScheduleSlider
 import com.flashlight.flashalert.oncall.sms.features.flashalert.presentation.components.CustomToggle
@@ -46,6 +45,8 @@ import com.flashlight.flashalert.oncall.sms.features.flashalert.presentation.com
 import com.flashlight.flashalert.oncall.sms.features.flashalert.viewmodel.AdvancedSettingsViewModel
 import com.flashlight.flashalert.oncall.sms.features.flashalert.viewmodel.TimePickerType
 import com.flashlight.flashalert.oncall.sms.ui.theme.InterFontFamily
+import com.flashlight.flashalert.oncall.sms.utils.AdsUtils
+import com.nlbn.ads.util.Admob
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -58,7 +59,7 @@ fun AdvancedSettingsScreen(
     navigator: DestinationsNavigator
 ) {
     val state by viewModel.state.collectAsState()
-    val context = LocalContext.current
+    val activity = LocalActivity.current
 
     Box(
         modifier = modifier.fillMaxSize()
@@ -86,7 +87,19 @@ fun AdvancedSettingsScreen(
                     contentDescription = "Back",
                     modifier = Modifier
                         .size(24.dp)
-                        .clickableWithoutIndication { navigator.navigateUp() }
+                        .clickableWithoutIndication {
+                            if (activity != null) {
+                                AdsUtils.loadAndDisplayInter(
+                                    context = activity,
+                                    adUnitId = activity.getString(R.string.inter_inapp),
+                                    onNextAction = {
+                                        navigator.popBackStack()
+                                    }
+                                )
+                            } else {
+                                navigator.popBackStack()
+                            }
+                        }
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
@@ -105,18 +118,19 @@ fun AdvancedSettingsScreen(
                     .fillMaxWidth()
                     .verticalScroll(rememberScrollState())
             ) {
-                // Advertisement Card
-                Image(
-                    painter = painterResource(id = R.drawable.img_ads_native),
-                    contentDescription = "App Notifications",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(80.dp)
-                        .clip(RoundedCornerShape(16.dp)),
-                    contentScale = ContentScale.Crop
-                )
+                if (Admob.getInstance().isLoadFullAds) {
+                    // Advertisement Card
+                    Box(
+                        modifier = modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(Color(0xFF2F3C55))
+                    ) {
+                        NativeAdNoMedia(stringResource(R.string.native_Advanced)) { }
+                    }
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    Spacer(modifier = Modifier.height(12.dp))
+                }
 
                 // Disable when phone is in use
                 Box(
@@ -154,7 +168,7 @@ fun AdvancedSettingsScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 // Battery saver schedule
-                Column (
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))

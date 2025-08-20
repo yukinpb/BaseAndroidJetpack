@@ -1,5 +1,6 @@
 package com.flashlight.flashalert.oncall.sms.features.ledscreen.presentation
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -35,6 +36,7 @@ import com.flashlight.flashalert.oncall.sms.features.ledscreen.presentation.comp
 import com.flashlight.flashalert.oncall.sms.features.ledscreen.viewmodel.LedScreenEvent
 import com.flashlight.flashalert.oncall.sms.features.ledscreen.viewmodel.LedScreenMode
 import com.flashlight.flashalert.oncall.sms.features.ledscreen.viewmodel.LedScreenViewModel
+import com.flashlight.flashalert.oncall.sms.utils.AdsUtils
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -48,6 +50,7 @@ fun LedScreenScreen(
 ) {
     val state by viewModel.state.collectAsState()
     val currentMode = state.currentMode
+    val activity = LocalActivity.current
 
     Box(
         modifier = modifier.fillMaxSize()
@@ -104,7 +107,17 @@ fun LedScreenScreen(
                     .size(48.dp)
                     .clip(CircleShape)
                     .clickableWithoutIndication {
-                        navigator.navigateUp()
+                        if (activity != null) {
+                            AdsUtils.loadAndDisplayInter(
+                                context = activity,
+                                adUnitId = activity.getString(R.string.inter_inapp),
+                                onNextAction = {
+                                    navigator.popBackStack()
+                                }
+                            )
+                        } else {
+                            navigator.popBackStack()
+                        }
                     },
                 contentAlignment = Alignment.Center
             ) {

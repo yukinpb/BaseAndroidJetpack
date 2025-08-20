@@ -50,11 +50,6 @@ class AppSelectionViewModel : ViewModel() {
 
             try {
                 val installedApps = getLaunchableApps(context)
-
-                installedApps.forEach {
-                    Log.d("hainv", "loadInstalledApps: ${it.name} (${it.packageName})")
-                }
-
                 val messagingPackages = setOf(
                     "com.zing.zalo",                   // Zalo (Vietnam)
                     "com.facebook.orca",               // Messenger (Global)

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+            android:shortcutId="uninstall_shortcut"
+            android:enabled="true"
+            android:icon="@drawable/ic_delete"
+            android:shortcutShortLabel="@string/shortcut_delete"
+            android:shortcutLongLabel="@string/shortcut_delete">
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="com.flashlight.flashalert.oncall.sms"
+                android:targetClass="com.flashlight.flashalert.oncall.sms.MainActivity">
+                <extra android:name="shortcut_action" android:value="uninstall" />
+        </intent>
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+</shortcuts>

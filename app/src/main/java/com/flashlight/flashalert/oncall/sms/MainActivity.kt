@@ -13,13 +13,24 @@ import androidx.core.view.WindowCompat
 import com.flashlight.flashalert.oncall.sms.features.main.presentation.MainScreen
 import com.flashlight.flashalert.oncall.sms.ui.theme.BaseProjectTheme
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.nlbn.ads.util.AppOpenManager
 import dagger.hilt.android.AndroidEntryPoint
+
+sealed class AppScreen {
+    companion object {
+        const val FROM_UNINSTALL = "uninstall"
+    }
+}
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        val shortcutAction = intent.getStringExtra("shortcut_action")
+
+        AppOpenManager.getInstance().disableAppResume()
 
         // Cấu hình status bar
         WindowCompat.setDecorFitsSystemWindows(window, false)
@@ -41,7 +52,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.Transparent
                 ) {
-                    MainScreen(modifier = Modifier.fillMaxSize())
+                    MainScreen(shortcutAction)
                 }
             }
         }

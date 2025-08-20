@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.facebook.shimmer.ShimmerFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:shimmer_auto_start="true"
+    app:shimmer_base_color="#ccc">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/ad_tag"
+            android:layout_width="13dp"
+            android:layout_height="10dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:src="@drawable/ad_tag"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/ad_headline"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/lightTransparent"
+            android:textColor="@color/white"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toStartOf="@+id/ad_tag"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/ad_body"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:background="@color/lightTransparent"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ad_headline" />
+
+        <com.google.android.gms.ads.nativead.MediaView
+            android:id="@+id/ad_media"
+            android:layout_width="match_parent"
+            android:layout_height="156dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/lightTransparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@id/ad_body"
+            app:layout_constraintTop_toBottomOf="@+id/ad_body" />
+
+        <TextView
+            android:id="@+id/ad_call_to_action"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:background="@color/lightTransparent"
+            android:gravity="center"
+            android:paddingVertical="8dp"
+            android:stateListAnimator="@null"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ad_media"
+            app:layout_constraintVertical_bias="0.0" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.facebook.shimmer.ShimmerFrameLayout>

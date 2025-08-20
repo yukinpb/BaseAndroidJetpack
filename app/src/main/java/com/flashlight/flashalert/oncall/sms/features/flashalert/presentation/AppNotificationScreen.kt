@@ -1,6 +1,7 @@
 package com.flashlight.flashalert.oncall.sms.features.flashalert.presentation
 
 import android.widget.Toast
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -40,6 +41,7 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.flashlight.flashalert.oncall.sms.R
+import com.flashlight.flashalert.oncall.sms.ads.NativeAdNoMedia
 import com.flashlight.flashalert.oncall.sms.core.utils.clickableWithoutIndication
 import com.flashlight.flashalert.oncall.sms.features.flashalert.presentation.components.AppNotificationEnableFlashComponent
 import com.flashlight.flashalert.oncall.sms.features.flashalert.presentation.components.FlashSpeedComponent
@@ -47,6 +49,8 @@ import com.flashlight.flashalert.oncall.sms.features.flashalert.presentation.com
 import com.flashlight.flashalert.oncall.sms.features.flashalert.presentation.components.SmsPermissionDialog
 import com.flashlight.flashalert.oncall.sms.features.flashalert.viewmodel.AppNotificationViewModel
 import com.flashlight.flashalert.oncall.sms.ui.theme.InterFontFamily
+import com.flashlight.flashalert.oncall.sms.utils.AdsUtils
+import com.nlbn.ads.util.Admob
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.AppSelectionScreenDestination
@@ -62,6 +66,7 @@ fun AppNotificationScreen(
     val state by viewModel.state.collectAsState()
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
+    val activity = LocalActivity.current
 
     LaunchedEffect(Unit) {
         viewModel.checkNotificationPermission(context)
@@ -103,7 +108,19 @@ fun AppNotificationScreen(
                     contentDescription = "Back",
                     modifier = Modifier
                         .size(24.dp)
-                        .clickableWithoutIndication { navigator.navigateUp() }
+                        .clickableWithoutIndication {
+                            if (activity != null) {
+                                AdsUtils.loadAndDisplayInter(
+                                    context = activity,
+                                    adUnitId = activity.getString(R.string.inter_inapp),
+                                    onNextAction = {
+                                        navigator.popBackStack()
+                                    }
+                                )
+                            } else {
+                                navigator.popBackStack()
+                            }
+                        }
                 )
                 Spacer(modifier = Modifier.width(16.dp))
                 Text(
@@ -117,18 +134,19 @@ fun AppNotificationScreen(
 
             Spacer(modifier = Modifier.height(12.dp))
 
-            // Advertisement banner
-            Image(
-                painter = painterResource(id = R.drawable.img_ads_native),
-                contentDescription = "App Notifications",
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(80.dp)
-                    .clip(RoundedCornerShape(16.dp)),
-                contentScale = ContentScale.Crop
-            )
+            if (Admob.getInstance().isLoadFullAds) {
+                // Advertisement banner
+                Box(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(16.dp))
+                        .background(Color(0xFF2F3C55))
+                ) {
+                    NativeAdNoMedia(stringResource(R.string.native_Noti)) { }
+                }
 
-            Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(12.dp))
+            }
 
             // Enable Flash for App Notifications with Select Applications
             AppNotificationEnableFlashComponent(

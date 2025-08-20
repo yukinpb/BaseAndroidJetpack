@@ -144,7 +144,6 @@ class AppNotificationViewModel : ViewModel() {
 
     private fun startNotificationListenerService(context: Context) {
         try {
-            Log.d("hainv", "startNotificationListenerService: 1")
             // Start the main FlashAlertService if not running
             if (!FlashAlertService.isServiceRunning()) {
                 FlashAlertService.startService(context)

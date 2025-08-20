@@ -1,6 +1,7 @@
 [versions]
 accompanistSystemuicontroller = "0.32.0"
 agp = "8.8.2"
+coilCompose = "3.0.0"
 composeColorfulSliders = "1.2.2"
 converterGson = "2.9.0"
 hiltNavigationCompose = "1.2.0"
@@ -26,6 +27,20 @@ playServicesMaps = "19.2.0"
 retrofit = "2.9.0"
 composeDestinations = "2.2.0"
 cameraCore = "1.4.2"
+firebaseBom = "33.7.0"
+multidex = "2.0.1"
+playServicesAds = "23.6.0"
+adsAdvanceLib = "1.6.8"
+facebook = "6.18.0.0"
+facebookAndroidSdk = "18.0.0"
+shimmer = "0.5.0"
+lottie = "6.6.0"
+sdpAndroid = "1.1.0"
+sspAndroid = "1.1.0"
+googleGmsGoogleServices = "4.4.2"
+googleFirebaseCrashlytics = "3.0.2"
+lifecycleProcess = "2.9.0"
+constraintlayout = "2.2.0"
 
 [libraries]
 accompanist-systemuicontroller = { module = "com.google.accompanist:accompanist-systemuicontroller", version.ref = "accompanistSystemuicontroller" }
@@ -33,6 +48,7 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
 androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "lifecycleRuntimeCompose" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleViewmodelCompose" }
+coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 compose-colorful-sliders = { module = "com.github.SmartToolFactory:Compose-Colorful-Sliders", version.ref = "composeColorfulSliders" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "converterGson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -63,6 +79,21 @@ androidx-camera-camera2 = { module = "androidx.camera:camera-camera2", version.r
 androidx-camera-core = { module = "androidx.camera:camera-core", version.ref = "cameraCore" }
 androidx-camera-lifecycle = { module = "androidx.camera:camera-lifecycle", version.ref = "cameraCore" }
 androidx-camera-view = { module = "androidx.camera:camera-view", version.ref = "cameraCore" }
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
+firebase-analytics-ktx = { module = "com.google.firebase:firebase-analytics-ktx" }
+firebase-crashlytics-ktx = { module = "com.google.firebase:firebase-crashlytics-ktx" }
+firebase-config-ktx = { module = "com.google.firebase:firebase-config-ktx" }
+ads-advance-lib = { module = "com.github.heaven-std:ads-advance-lib", version.ref = "adsAdvanceLib" }
+play-services-ads = { module = "com.google.android.gms:play-services-ads", version.ref = "playServicesAds" }
+androidx-multidex = { module = "androidx.multidex:multidex", version.ref = "multidex" }
+facebook = { module = "com.google.ads.mediation:facebook", version.ref = "facebook" }
+facebook-android-sdk = { module = "com.facebook.android:facebook-android-sdk", version.ref = "facebookAndroidSdk" }
+shimmer = { module = "com.facebook.shimmer:shimmer", version.ref = "shimmer" }
+lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
+ssp-android = { module = "com.intuit.ssp:ssp-android", version.ref = "sspAndroid" }
+sdp-android = { module = "com.intuit.sdp:sdp-android", version.ref = "sdpAndroid" }
+androidx-lifecycle-process = { group = "androidx.lifecycle", name = "lifecycle-process", version.ref = "lifecycleProcess" }
+androidx-constraintlayout = { module = "androidx.constraintlayout:constraintlayout", version.ref = "constraintlayout" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
@@ -70,4 +101,6 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 android-hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+google-gms-google-services = { id = "com.google.gms.google-services", version.ref = "googleGmsGoogleServices" }
+google-firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "googleFirebaseCrashlytics" }
 

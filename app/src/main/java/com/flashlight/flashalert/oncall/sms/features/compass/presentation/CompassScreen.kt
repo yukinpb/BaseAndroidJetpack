@@ -1,5 +1,6 @@
 package com.flashlight.flashalert.oncall.sms.features.compass.presentation
 
+import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +38,7 @@ import com.flashlight.flashalert.oncall.sms.features.compass.presentation.compon
 import com.flashlight.flashalert.oncall.sms.features.compass.presentation.components.GoogleMapView
 import com.flashlight.flashalert.oncall.sms.features.compass.viewmodel.CompassViewModel
 import com.flashlight.flashalert.oncall.sms.ui.theme.InterFontFamily
+import com.flashlight.flashalert.oncall.sms.utils.AdsUtils
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
@@ -50,6 +52,7 @@ fun CompassScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     var shouldCenterToCurrentLocation by remember { mutableStateOf(false) }
+    val activity = LocalActivity.current
 
     DisposableEffect(Unit) {
         viewModel.startListening()
@@ -97,7 +100,19 @@ fun CompassScreen(
                     contentDescription = "Back",
                     modifier = Modifier
                         .size(24.dp)
-                        .clickableWithoutIndication { navigator.popBackStack() }
+                        .clickableWithoutIndication {
+                            if (activity != null) {
+                                AdsUtils.loadAndDisplayInter(
+                                    context = activity,
+                                    adUnitId = activity.getString(R.string.inter_inapp),
+                                    onNextAction = {
+                                        navigator.popBackStack()
+                                    }
+                                )
+                            } else {
+                                navigator.popBackStack()
+                            }
+                        }
                 )
 
                 Spacer(modifier = Modifier.width(16.dp))

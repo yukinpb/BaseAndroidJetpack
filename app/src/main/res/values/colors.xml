@@ -7,4 +7,10 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!-- Ads -->
+    <color name="bg_ads">#4A68FF</color>
+    <color name="bg_ads_opacity">#FF312E41</color>
+
+    <color name="text_title">#2F3757</color>
+    <color name="text_body">#151A2D</color>
 </resources>

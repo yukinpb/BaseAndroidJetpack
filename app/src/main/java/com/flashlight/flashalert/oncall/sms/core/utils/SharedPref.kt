@@ -37,6 +37,9 @@ private const val KEY_ENABLE_FLASH_IN_RINGTONE_MODE = "enable_flash_in_ringtone_
 private const val KEY_ENABLE_FLASH_IN_VIBRATE_MODE = "enable_flash_in_vibrate_mode"
 private const val KEY_ENABLE_FLASH_IN_MUTE_MODE = "enable_flash_in_mute_mode"
 
+// Settings
+private const val KEY_IS_AUTOMATIC_ON = "is_automatic_on"
+
 // LED Screen Settings
 private const val KEY_LED_SCREEN_COLOR = "led_screen_color"
 private const val KEY_LED_SCREEN_BRIGHTNESS = "led_screen_brightness"
@@ -226,6 +229,14 @@ object SharedPrefs {
         get() = prefs.getBoolean(KEY_ENABLE_FLASH_IN_MUTE_MODE, true)
         set(value) {
             editor.putBoolean(KEY_ENABLE_FLASH_IN_MUTE_MODE, value).commit()
+            editor.apply()
+        }
+
+    // Settings
+    var isAutomaticOn: Boolean
+        get() = prefs.getBoolean(KEY_IS_AUTOMATIC_ON, false)
+        set(value) {
+            editor.putBoolean(KEY_IS_AUTOMATIC_ON, value).commit()
             editor.apply()
         }
 
