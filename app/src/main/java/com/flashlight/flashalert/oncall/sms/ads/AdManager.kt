@@ -18,13 +18,7 @@ object AdManager {
     private val adLoadedMap = mutableMapOf<String, Boolean>()
     private val coroutineScope = CoroutineScope(Dispatchers.Main)
 
-    fun preloadLanguageAds(context: Context, isConnected: Boolean) {
-        if (!isConnected) {
-            adLoadedMap["native_language"] = true
-            adLoadedMap["native_language_selected"] = true
-            return
-        }
-
+    fun preloadLanguageAds(context: Context) {
         val adUnits = listOf(
             context.getString(R.string.native_language),
             context.getString(R.string.native_language_selected)

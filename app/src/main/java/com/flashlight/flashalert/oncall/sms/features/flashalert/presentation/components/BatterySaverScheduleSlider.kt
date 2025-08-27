@@ -27,47 +27,59 @@ import com.flashlight.flashalert.oncall.sms.ui.theme.InterFontFamily
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.width
+import androidx.compose.ui.input.pointer.pointerInput
 
 @Composable
 fun BatterySaverScheduleSlider(
+    isEnable: Boolean,
     batteryThreshold: Float,
     onBatteryThresholdChange: (Float) -> Unit,
-    onResetToDefault: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Column(modifier = modifier) {
-        Row(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 6.dp).offset(y = 16.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(R.string.turn_off_if_battery_below),
-                color = Color.White,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.W400,
-                fontFamily = InterFontFamily,
-                modifier = Modifier
-                    .weight(1f)
-            )
-            
-            Text(
-                text = "${batteryThreshold.toInt()}%",
-                color = Color(0xFF00C8FF),
-                fontSize = 12.sp,
-                fontWeight = FontWeight.W400,
-                fontFamily = InterFontFamily
+    Box(modifier = modifier) {
+        Column(modifier = Modifier.padding(start = 16.dp, end = 16.dp, bottom = 16.dp)) {
+            Row(
+                modifier = Modifier.fillMaxWidth().offset(y = 16.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(R.string.turn_off_if_battery_below),
+                    color = Color.White,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.W400,
+                    fontFamily = InterFontFamily,
+                    modifier = Modifier
+                        .weight(1f)
+                )
+
+                Text(
+                    text = "${batteryThreshold.toInt()}%",
+                    color = Color(0xFF00C8FF),
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.W400,
+                    fontFamily = InterFontFamily
+                )
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Battery threshold slider
+            CustomSlider(
+                value = batteryThreshold,
+                onValueChange = onBatteryThresholdChange,
+                valueRange = 10f..100f,
+                modifier = Modifier.fillMaxWidth()
             )
         }
-        
-        Spacer(modifier = Modifier.height(12.dp))
-        
-        // Battery threshold slider
-        CustomSlider(
-            value = batteryThreshold,
-            onValueChange = onBatteryThresholdChange,
-            valueRange = 10f..100f,
-            modifier = Modifier.fillMaxWidth()
-        )
+
+        if (!isEnable) {
+            Box(
+                modifier = Modifier
+                    .matchParentSize()
+                    .background(Color.Black.copy(alpha = 0.5f))
+                    .pointerInput(Unit) {}
+            )
+        }
     }
 } 

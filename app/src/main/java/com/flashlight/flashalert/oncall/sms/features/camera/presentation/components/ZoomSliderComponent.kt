@@ -1,12 +1,12 @@
 package com.flashlight.flashalert.oncall.sms.features.camera.presentation.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -24,70 +25,92 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.onSizeChanged
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.flashlight.flashalert.oncall.sms.R
+import java.util.Locale
 import kotlin.math.roundToInt
 
 @Composable
 fun ZoomSliderComponent(
+    modifier: Modifier = Modifier,
+    isAutomaticUpdateZoom: Boolean,
     currentZoom: Float,
-    onZoomChanged: (Float) -> Unit,
-    modifier: Modifier = Modifier
+    onZoomChanged: (Float) -> Unit
 ) {
-    // Create smaller incremental zoom levels (0.2x steps) from 1.0x to 4.0x
+    // Create smaller incremental zoom levels (0.2x steps) from 1.0x to 5.2x
     val minZoom = 1.0f
-    val maxZoom = 4.0f
+    val maxZoom = 5.0f
 
-    // Calculate slider width and thumb position
-    val sliderWidth = 320f // Total slider width in dp
-    val thumbOffset = ((currentZoom - minZoom) / (maxZoom - minZoom)) * sliderWidth
+    var dragOffset by remember {
+        mutableFloatStateOf(0f)
+    }
+    var sliderWidth by remember { mutableFloatStateOf(0f) }
+    val density = LocalDensity.current
 
     Box(
         modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .padding(16.dp)
-            .background(
-                color = Color(0xFF2D2D2D).copy(alpha = 0.6f),
-                shape = RoundedCornerShape(8.dp)
-            )
     ) {
-        // Major zoom level labels (1x, 2x, 3x, 4x) with tick marks horizontally
-        Row(
+        // Slider with tick marks at the bottom
+        Box(
             modifier = Modifier
-                .padding(horizontal = 16.dp)
+                .align(Alignment.BottomCenter)
                 .fillMaxWidth()
-                .height(39.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
+                .wrapContentHeight()
+                .background(
+                    color = Color(0xFF2D2D2D).copy(alpha = 0.6f),
+                    shape = RoundedCornerShape(8.dp)
+                )
+                .padding(top = 24.dp, bottom = 16.dp, start = 16.dp, end = 16.dp)
         ) {
-            val majorZoomLevels = listOf(1f, 2f, 3f, 4f)
-            majorZoomLevels.forEachIndexed { index, majorZoom ->
-                if (index < majorZoomLevels.size - 1) {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceAround,
-                        modifier = Modifier.weight(5f)
-                    ) {
-                        // Major zoom level label
-                        Text(
-                            text = "${majorZoom.toInt()}x",
-                            color = Color.White,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.W400,
-                            modifier = Modifier.clickable {
-                                onZoomChanged(majorZoom)
+            // Tick marks across the slider
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .onSizeChanged { size ->
+                        with(density) {
+                            sliderWidth = (size.width.toDp() - 15.dp).value
+                        }
+                    },
+                horizontalArrangement = Arrangement.SpaceEvenly,
+                verticalAlignment = Alignment.Bottom
+            ) {
+                val majorZoomLevels = listOf(1f, 2f, 3f, 4f, 5f)
+                majorZoomLevels.forEachIndexed { index, majorZoom ->
+                    if (index < majorZoomLevels.size - 1) {
+                        Row(
+                            verticalAlignment = Alignment.Bottom,
+                            horizontalArrangement = Arrangement.SpaceAround,
+                            modifier = Modifier.weight(5f)
+                        ) {
+                            // Add tick marks horizontally after each major zoom level (except the last one)
+                            repeat(6) { tickIndex ->
+                                Box(
+                                    modifier = Modifier
+                                        .size(1.dp, 10.dp)
+                                        .background(
+                                            color = Color.White,
+                                            shape = RoundedCornerShape(0.5.dp)
+                                        )
+                                )
                             }
-                        )
-
-                        // Add tick marks horizontally after each major zoom level (except the last one)
-                        repeat(5) { tickIndex ->
+                        }
+                    } else {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceAround,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            // Major zoom level label
                             Box(
                                 modifier = Modifier
-                                    .size(1.dp, 8.dp)
+                                    .size(1.dp, 16.dp)
                                     .background(
                                         color = Color.White,
                                         shape = RoundedCornerShape(0.5.dp)
@@ -95,36 +118,22 @@ fun ZoomSliderComponent(
                             )
                         }
                     }
-                } else {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceAround,
-                        modifier = Modifier.weight(1f)
-                    ) {
-                        // Major zoom level label
-                        Text(
-                            text = "${majorZoom.toInt()}x",
-                            color = Color.White,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.W400,
-                            modifier = Modifier.clickable {
-                                onZoomChanged(majorZoom)
-                            }
-                        )
-                    }
                 }
-
             }
         }
 
-        // Draggable Zoom thumb with larger hit box
-        var dragOffset by remember { mutableFloatStateOf(thumbOffset) }
+        LaunchedEffect(sliderWidth) {
+            if (sliderWidth > 0f) {
+                dragOffset = ((currentZoom - minZoom) / (maxZoom - minZoom)) * sliderWidth
+            }
+        }
 
-        Box(
+        Column(
             modifier = Modifier
-                .align(Alignment.CenterStart)
-                .offset(x = dragOffset.dp, y = 0.dp)
-                .size(24.dp, 39.dp) // Larger hit box for easier dragging
+                .padding(bottom = 16.dp)
+                .align(Alignment.BottomStart)
+                .offset(x = if (isAutomaticUpdateZoom) (((currentZoom - minZoom) / (maxZoom - minZoom)) * sliderWidth + 6).dp else (dragOffset + 6).dp, y = 0.dp)
+                .wrapContentHeight()
                 .pointerInput(sliderWidth, minZoom, maxZoom) {
                     detectDragGestures(
                         onDrag = { change, dragAmount ->
@@ -147,15 +156,26 @@ fun ZoomSliderComponent(
                                 ((snappedZoom - minZoom) / (maxZoom - minZoom)) * sliderWidth
                         }
                     )
-                }
+                },
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            // Center the actual thumb image within the larger hit box
-            Image(
-                painter = painterResource(id = R.drawable.ic_zoom_thumb),
-                contentDescription = "Zoom",
+            Text(
+                text = "x${String.format(Locale.US, "%.1f", currentZoom)}",
+                color = Color.White,
+                fontSize = 16.sp,
+                fontWeight = FontWeight.W500
+            )
+
+            Spacer(modifier = Modifier.height(12.dp))
+
+            // Yellow vertical line indicator (like in the image)
+            Box(
                 modifier = Modifier
-                    .size(8.dp, 39.dp)
-                    .align(Alignment.Center)
+                    .size(3.dp, 32.dp)
+                    .background(
+                        color = Color(0xFFFFD700), // Yellow color
+                        shape = RoundedCornerShape(1.5.dp)
+                    )
             )
         }
     }

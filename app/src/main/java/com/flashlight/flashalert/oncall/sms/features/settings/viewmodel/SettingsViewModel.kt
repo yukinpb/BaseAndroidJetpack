@@ -17,6 +17,7 @@ data class SettingsState(
     val isAutomaticOn: Boolean = false,
     val appVersion: String = "1.0.0",
     val showRatingDialog: Boolean = false,
+    val showSatisfactionDialog: Boolean = false,
     val showThanksForFeedbackDialog: Boolean = false,
     val isGoToFeedback: Boolean = false
 )
@@ -55,12 +56,26 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun onRatingClick() {
-        // Show rating dialog
-        _state.value = _state.value.copy(showRatingDialog = true)
+        // Show satisfaction dialog first
+        _state.value = _state.value.copy(showSatisfactionDialog = true)
     }
 
     fun hideRatingDialog() {
         _state.value = _state.value.copy(showRatingDialog = false)
+    }
+
+    fun hideSatisfactionDialog() {
+        _state.value = _state.value.copy(showSatisfactionDialog = false)
+    }
+
+    fun onNotReallyClick() {
+        hideSatisfactionDialog()
+        onSendFeedback()
+    }
+
+    fun onAbsolutelyClick() {
+        hideSatisfactionDialog()
+        _state.value = _state.value.copy(showRatingDialog = true)
     }
 
     fun onRateOnGooglePlay() {
@@ -83,9 +98,11 @@ class SettingsViewModel @Inject constructor(
     }
 
     fun showThanksForFeedbackScreen() {
-        if (_state.value.isGoToFeedback) {
+        if (_state.value.isGoToFeedback && SharedPrefs.isSubmitFeedback) {
             _state.value =
                 _state.value.copy(showThanksForFeedbackDialog = true, isGoToFeedback = false)
+
+            SharedPrefs.isSubmitFeedback = false
         }
     }
 

@@ -46,6 +46,7 @@ import com.flashlight.flashalert.oncall.sms.ads.NativeAdUninstall
 import com.flashlight.flashalert.oncall.sms.core.utils.clickableWithoutIndication
 import com.flashlight.flashalert.oncall.sms.ui.theme.InterFontFamily
 import com.flashlight.flashalert.oncall.sms.utils.NetworkMonitor
+import com.nlbn.ads.util.Admob
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
 import com.ramcosta.composedestinations.generated.destinations.SplashScreenDestination
@@ -116,7 +117,7 @@ fun UninstallScreen(navigator: DestinationsNavigator) {
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                if (isConnected) {
+                if (isConnected && Admob.getInstance().isLoadFullAds) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()

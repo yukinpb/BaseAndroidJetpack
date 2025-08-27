@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.windowInsetsPadding
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -35,6 +36,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -100,14 +102,20 @@ fun CameraScreen(
                 != PackageManager.PERMISSION_GRANTED) {
                 permissionsToRequest.add(Manifest.permission.READ_MEDIA_IMAGES)
             }
-        } else {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
             // Below API 33
             if (ContextCompat.checkSelfPermission(context, Manifest.permission.READ_EXTERNAL_STORAGE) 
                 != PackageManager.PERMISSION_GRANTED) {
                 permissionsToRequest.add(Manifest.permission.READ_EXTERNAL_STORAGE)
             }
+        } else {
+            // Below API 29
+            if (ContextCompat.checkSelfPermission(context, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+                permissionsToRequest.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            }
         }
-        
+
         // Request permissions if needed
         if (permissionsToRequest.isNotEmpty()) {
             storagePermissionLauncher.launch(permissionsToRequest.toTypedArray())
@@ -136,7 +144,17 @@ fun CameraScreen(
                     this.scaleType = PreviewView.ScaleType.FILL_CENTER
                 }
             },
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier
+                .fillMaxSize()
+                .pointerInput(Unit) {
+                    detectTransformGestures { _, pan, zoom, _ ->
+                        // Handle pinch to zoom
+                        if (zoom != 1f) {
+                            val newZoom = state.currentZoom * zoom
+                            viewModel.handleEvent(CameraEvent.UpdateZoom(newZoom), isAutomaticUpdateZoom = true)
+                        }
+                    }
+                },
             update = { previewView ->
                 // Setup camera when PreviewView is created and permission is granted
                 if (ContextCompat.checkSelfPermission(
@@ -211,7 +229,8 @@ fun CameraScreen(
                     currentZoom = state.currentZoom,
                     onZoomChanged = { zoomLevel ->
                         viewModel.handleEvent(CameraEvent.UpdateZoom(zoomLevel))
-                    }
+                    },
+                    isAutomaticUpdateZoom = state.isAutomaticUpdateZoom
                 )
 
                 Spacer(modifier = Modifier.height(12.dp))

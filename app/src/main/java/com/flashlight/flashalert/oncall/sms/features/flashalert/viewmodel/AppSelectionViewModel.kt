@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.Drawable
 import android.os.Build
-import android.util.Log
 import android.util.LruCache
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -56,8 +55,6 @@ class AppSelectionViewModel : ViewModel() {
                     "com.viber.voip",                  // Viber (Global)
                     "com.whatsapp",                    // WhatsApp (Global)
                     "org.telegram.messenger",          // Telegram (Global)
-                    "com.google.android.apps.messaging", // Google Messages (Global)
-                    "com.android.mms",                 // Default SMS (Android)
                     "jp.naver.line.android",           // LINE (Japan, Taiwan, Thailand)
                     "com.kakao.talk",                  // KakaoTalk (Korea)
                     "com.tencent.mm",                  // WeChat (China)
@@ -65,7 +62,6 @@ class AppSelectionViewModel : ViewModel() {
                     "com.bbm",                         // BBM (Indonesia, legacy)
                     "com.skype.raider",                // Skype (Global)
                     "com.snapchat.android",            // Snapchat (Global)
-                    "com.samsung.android.messaging",   // Samsung Messages (Global)
                     "com.truecaller",                  // Truecaller (India, Global)
                     "com.imo.android.imoim",           // imo (Middle East, South Asia)
                     "com.hike.chat.stickers",          // Hike (India, legacy)

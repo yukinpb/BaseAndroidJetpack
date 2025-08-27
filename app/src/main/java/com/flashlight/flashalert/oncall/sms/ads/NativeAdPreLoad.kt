@@ -26,9 +26,6 @@ fun NativeAdPreLoaded(preloadedAd: NativeAd?) {
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentHeight()
-                .background(
-                    if (Admob.getInstance().isLoadFullAds) colorResource(R.color.bg_ads) else Color.White
-                )
         ) {
             NativeAdShimmer()
         }

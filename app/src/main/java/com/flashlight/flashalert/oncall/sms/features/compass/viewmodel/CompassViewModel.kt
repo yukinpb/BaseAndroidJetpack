@@ -1,6 +1,8 @@
 package com.flashlight.flashalert.oncall.sms.features.compass.viewmodel
 
+import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -9,9 +11,11 @@ import android.hardware.camera2.CameraManager
 import android.os.Looper
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.Priority
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
@@ -64,7 +68,7 @@ class CompassViewModel @Inject constructor(
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
-    private fun startLocationUpdates() {
+    fun startLocationUpdates() {
         try {
             val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000L)
                 .setMinUpdateIntervalMillis(5000L)
@@ -79,6 +83,37 @@ class CompassViewModel @Inject constructor(
             // Handle permission not granted
             e.printStackTrace()
         }
+    }
+
+    fun checkAndRequestLocationSettings(activity: Activity) {
+        val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 10000L)
+            .setMinUpdateIntervalMillis(5000L)
+            .build()
+
+        val builder = LocationSettingsRequest.Builder()
+            .addLocationRequest(locationRequest)
+            .setAlwaysShow(true)
+
+        val client = LocationServices.getSettingsClient(activity)
+        val task = client.checkLocationSettings(builder.build())
+
+        task.addOnSuccessListener { locationSettingsResponse ->
+            // GPS is enabled, start location updates
+            startLocationUpdates()
+        }.addOnFailureListener { exception ->
+            if (exception is ResolvableApiException) {
+                try {
+                    // Show the dialog by calling startResolutionForResult
+                    exception.startResolutionForResult(activity, LOCATION_SETTINGS_REQUEST_CODE)
+                } catch (sendEx: Exception) {
+                    // Ignore the error
+                }
+            }
+        }
+    }
+
+    companion object {
+        const val LOCATION_SETTINGS_REQUEST_CODE = 1001
     }
 
     private val locationCallback = object : com.google.android.gms.location.LocationCallback() {

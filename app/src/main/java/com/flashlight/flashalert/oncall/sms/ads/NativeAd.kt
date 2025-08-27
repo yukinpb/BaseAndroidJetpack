@@ -19,6 +19,7 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdLoader
 import com.google.android.gms.ads.AdRequest
 import androidx.compose.runtime.*
+import com.flashlight.flashalert.oncall.sms.utils.AdsUtils
 import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdView
@@ -77,7 +78,7 @@ fun NativeAd(
                         val adView = LayoutInflater.from(ctx)
                             .inflate(layoutID, containerView, false) as NativeAdView
 
-                        bindNativeAdToView(nativeAd, adView)
+                        AdsUtils.bindToView(nativeAd, adView)
 
                         containerView.removeAllViews()
                         containerView.addView(adView)
@@ -99,32 +100,4 @@ fun NativeAd(
                 .clip(RoundedCornerShape(16.dp))
         )
     }
-}
-
-fun bindNativeAdToView(nativeAd: NativeAd, adView: NativeAdView) {
-    adView.headlineView = adView.findViewById<TextView>(R.id.ad_headline).apply {
-        text = nativeAd.headline
-    }
-
-    adView.bodyView = adView.findViewById<TextView>(R.id.ad_body).apply {
-        nativeAd.body?.let {
-            text = it
-            visibility = View.VISIBLE
-        } ?: run {
-            visibility = View.GONE
-        }
-    }
-
-    adView.callToActionView = adView.findViewById<TextView>(R.id.ad_call_to_action).apply {
-        nativeAd.callToAction?.let {
-            text = it
-            visibility = View.VISIBLE
-        } ?: run {
-            visibility = View.GONE
-        }
-    }
-
-    adView.mediaView = adView.findViewById(R.id.ad_media)
-
-    adView.setNativeAd(nativeAd)
 }

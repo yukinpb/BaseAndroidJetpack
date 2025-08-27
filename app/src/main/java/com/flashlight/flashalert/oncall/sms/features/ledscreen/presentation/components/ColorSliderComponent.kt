@@ -34,15 +34,16 @@ fun ColorSliderComponent(
     modifier: Modifier = Modifier
 ) {
     val colors = listOf(
+        Color(0xFFFF0000), // Red
+        Color(0xFFFF00FF), // Magenta
         Color(0xFF8B00FF), // Purple
         Color(0xFF0000FF), // Blue
         Color(0xFF00FFFF), // Cyan
         Color(0xFF00FF00), // Green
         Color(0xFFFFFF00), // Yellow
         Color(0xFFFF8000), // Orange
-        Color(0xFFFF0000), // Red
-        Color(0xFFFF00FF), // Magenta
-        Color(0xFF8B4513)  // Brown
+        Color(0xFF8B4513),  // Brown
+        Color(0xFFFFFFFF)  // White
     )
 
     val gradient = Brush.horizontalGradient(colors = colors)

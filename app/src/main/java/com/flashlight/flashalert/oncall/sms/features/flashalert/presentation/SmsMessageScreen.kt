@@ -1,6 +1,10 @@
 package com.flashlight.flashalert.oncall.sms.features.flashalert.presentation
 
+import android.Manifest
+import android.os.Build
 import androidx.activity.compose.LocalActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -66,6 +70,16 @@ fun SmsMessageScreen(
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
     val activity = LocalActivity.current
+
+    // Notification permission launcher
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            // Enable flash after notification permission granted
+            viewModel.toggleFlashEnabled(true, context)
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.checkNotificationPermission(context)
@@ -152,7 +166,17 @@ fun SmsMessageScreen(
                 title = stringResource(R.string.enable_flash_for_sms_messages),
                 isEnabled = state.isFlashEnabled,
                 onToggle = { enabled ->
-                    viewModel.toggleFlashEnabled(enabled, context)
+                    if (enabled) {
+                        if (!viewModel.hasNotificationPermission(context) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            // Android 13+: Request notification permission if not have it
+                            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        } else {
+                            // Có đủ quyền: Enable flash
+                            viewModel.toggleFlashEnabled(true, context)
+                        }
+                    } else {
+                        viewModel.toggleFlashEnabled(false, context)
+                    }
                 }
             )
 
@@ -176,7 +200,7 @@ fun SmsMessageScreen(
                         onFlashTimesChange = { times ->
                             viewModel.updateFlashTimes(times)
                         },
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                        modifier = Modifier.padding(horizontal = 10.dp)
                     )
 
                     // Divider
@@ -196,7 +220,7 @@ fun SmsMessageScreen(
                         onResetToDefault = {
                             viewModel.resetToDefault()
                         },
-                        modifier = Modifier.padding(start = 16.dp, end = 16.dp, top = 8.dp)
+                        modifier = Modifier.padding(start = 10.dp, end = 10.dp, top = 8.dp)
                     )
 
                     // Divider

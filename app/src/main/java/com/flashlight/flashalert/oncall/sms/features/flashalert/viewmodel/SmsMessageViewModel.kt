@@ -1,10 +1,14 @@
 package com.flashlight.flashalert.oncall.sms.features.flashalert.viewmodel
 
+import android.Manifest
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.hardware.camera2.CameraManager
+import android.os.Build
 import android.provider.Settings
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flashlight.flashalert.oncall.sms.core.utils.Constants
@@ -134,6 +138,18 @@ class SmsMessageViewModel : ViewModel() {
         // If permission granted and flash is enabled, start both services
         if (hasPermission && _state.value.isFlashEnabled) {
             startNotificationListenerService(context)
+        }
+    }
+
+    fun hasNotificationPermission(context: Context): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        } else {
+            // Android 12 trở xuống không cần quyền notification
+            true
         }
     }
 

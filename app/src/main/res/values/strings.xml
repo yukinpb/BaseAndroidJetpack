@@ -26,11 +26,11 @@
     <string name="enable_flash_for_sms_messages">Enable Flash for SMS Messages</string>
     <string name="grant_access">Grant access</string>
     <string name="ok">OK</string>
-    <string name="sms_manual_enable_instruction">On the next screen, find the Flashlight app, then tap to Enable or Allow</string>
+    <string name="sms_manual_enable_instruction">On the next screen, find the Flashlight app, then tap to Enable or Allow.</string>
     <string name="sms_permission_step1_part1">Allow</string>
     <string name="sms_permission_step1_part2">Flashlight</string>
     <string name="flash_times">Flash times</string>
-    <string name="sms_permission_step1_part3">to access SMS to blink the flash for new messages - so you never miss any, even in silent or dark mode. Your privacy is protected and used only for SMS.</string>
+    <string name="sms_permission_step1_part3">to access SMS messages and app notifications to blink the flash for new alerts, even in silent or dark mode. Your privacy is protected and used only for essential features.</string>
     <string name="app_notifications">App Notifications</string>
     <string name="enable_flash_for_app_notifications">Enable Flash for App Notifications</string>
     <string name="select_applications">Select applications</string>
@@ -89,12 +89,17 @@
     <string name="share_app_message">Hey! Check out this amazing app: %s. Download it now and enjoy! #AppName</string>
     <string name="share_app_chooser">Share via</string>
     <string name="splash_des">This action can contains ads</string>
+    <string name="satisfaction_question">Do you feel satisfied while\nusing the app?</string>
+    <string name="not_really">Not really</string>
+    <string name="absolutely">Absolutely!</string>
     <string name="language_english">English</string>
-    <string name="language_france">France</string>
-    <string name="language_china">China</string>
-    <string name="language_indonesia">Indonesia</string>
-    <string name="language_india">India</string>
-    <string name="language_germany">Germany</string>
+    <string name="language_france" translatable="false">Français</string>
+    <string name="language_china" translatable="false">中国人</string>
+    <string name="language_indonesia" translatable="false">Indonesia</string>
+    <string name="language_india" translatable="false">जर्मन</string>
+    <string name="language_germany" translatable="false">Deutsch</string>
+    <string name="language_spain" translatable="false">Español</string>
+    <string name="language_japan" translatable="false">日本語</string>
     <string name="language_english_us">English (US)</string>
     <string name="language_english_uk">English (UK)</string>
     <string name="language_english_au">English (Australia)</string>
@@ -110,7 +115,6 @@
     <string name="intro_extra_title_3">Auto-on flash, night mode, power-saving. Flexible settings tailored to your habits.</string>
     <string name="start">Start</string>
     <string name="next">Next</string>
-
     <string name="question_uninstall_1">What problem did you encounter during use?</string>
     <string name="water_reminder_not_working">Does not work when screen is off</string>
     <string name="statistic_not_correct">Jerking, flashing unstable</string>

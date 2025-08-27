@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -173,10 +174,11 @@ fun AdvancedSettingsScreen(
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
                         .background(Color(0xFF2F3C55))
-                        .padding(16.dp)
                 ) {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                            .fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Image(
@@ -204,17 +206,17 @@ fun AdvancedSettingsScreen(
 
                     Box(
                         modifier = Modifier
+                            .padding(horizontal = 16.dp)
                             .fillMaxWidth()
                             .height(1.dp)
                             .background(Color(0xFF3B465D))
                     )
 
                     BatterySaverScheduleSlider(
+                        isEnable = state.batterySaverEnabled,
                         batteryThreshold = state.batteryThreshold,
                         onBatteryThresholdChange = { viewModel.updateBatteryThreshold(it) },
-                        onResetToDefault = {
-                            viewModel.updateBatteryThreshold(30f)
-                        }
+                        modifier = Modifier.fillMaxWidth()
                     )
                 }
 
@@ -226,11 +228,12 @@ fun AdvancedSettingsScreen(
                         .fillMaxWidth()
                         .clip(RoundedCornerShape(16.dp))
                         .background(Color(0xFF2F3C55))
-                        .padding(16.dp)
                 ) {
                     Column {
                         Row(
-                            modifier = Modifier.fillMaxWidth(),
+                            modifier = Modifier
+                                .padding(start = 16.dp, end = 16.dp, top = 16.dp)
+                                .fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Image(
@@ -258,107 +261,125 @@ fun AdvancedSettingsScreen(
 
                         Box(
                             modifier = Modifier
+                                .padding(horizontal = 16.dp)
                                 .fillMaxWidth()
                                 .height(1.dp)
                                 .background(Color(0xFF3B465D))
                         )
 
-                        Spacer(modifier = Modifier.height(12.dp))
-
-                        Text(
-                            text = stringResource(R.string.select_downtime_to_disable_flash_alert),
-                            color = Color.White.copy(alpha = 0.6f),
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.W400,
-                            fontFamily = InterFontFamily
-                        )
-
-                        Spacer(modifier = Modifier.height(8.dp))
-
-                        // Time selectors
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween
-                        ) {
-                            // From time
-                            Box(
+                        Box {
+                            Column(
                                 modifier = Modifier
-                                    .wrapContentWidth()
-                                    .clip(RoundedCornerShape(20.dp))
-                                    .background(Color.White.copy(alpha = 0.2f))
-                                    .padding(vertical = 8.dp, horizontal = 12.dp)
-                                    .clickableWithoutIndication {
-                                        viewModel.showTimePickerDialog(TimePickerType.FROM_TIME)
-                                    }
+                                    .fillMaxWidth()
+                                    .padding(start = 16.dp, end = 16.dp, bottom = 16.dp)
                             ) {
+                                Spacer(modifier = Modifier.height(12.dp))
+
+                                Text(
+                                    text = stringResource(R.string.select_downtime_to_disable_flash_alert),
+                                    color = Color.White.copy(alpha = 0.6f),
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.W400,
+                                    fontFamily = InterFontFamily
+                                )
+
+                                Spacer(modifier = Modifier.height(8.dp))
+
+                                // Time selectors
                                 Row(
-                                    verticalAlignment = Alignment.CenterVertically
+                                    modifier = Modifier.fillMaxWidth(),
+                                    horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
-                                    Text(
-                                        text = stringResource(R.string.from),
-                                        color = Color.White.copy(alpha = 0.6f),
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Text(
-                                        text = state.timeFrom,
-                                        color = Color.White,
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Image(
-                                        painter = painterResource(id = R.drawable.ic_expand_down),
-                                        contentDescription = "Select time",
-                                        modifier = Modifier.size(12.dp)
-                                    )
+                                    // From time
+                                    Box(
+                                        modifier = Modifier
+                                            .wrapContentWidth()
+                                            .clip(RoundedCornerShape(20.dp))
+                                            .background(Color.White.copy(alpha = 0.2f))
+                                            .padding(vertical = 8.dp, horizontal = 12.dp)
+                                            .clickableWithoutIndication {
+                                                viewModel.showTimePickerDialog(TimePickerType.FROM_TIME)
+                                            }
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Text(
+                                                text = stringResource(R.string.from),
+                                                color = Color.White.copy(alpha = 0.6f),
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.W400
+                                            )
+                                            Spacer(modifier = Modifier.width(6.dp))
+                                            Text(
+                                                text = state.timeFrom,
+                                                color = Color.White,
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.W400
+                                            )
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Image(
+                                                painter = painterResource(id = R.drawable.ic_expand_down),
+                                                contentDescription = "Select time",
+                                                modifier = Modifier.size(12.dp)
+                                            )
+                                        }
+                                    }
+
+                                    // To time
+                                    Box(
+                                        modifier = Modifier
+                                            .wrapContentWidth()
+                                            .clip(RoundedCornerShape(20.dp))
+                                            .background(Color.White.copy(alpha = 0.2f))
+                                            .padding(vertical = 8.dp, horizontal = 12.dp)
+                                            .clickableWithoutIndication {
+                                                viewModel.showTimePickerDialog(TimePickerType.TO_TIME)
+                                            }
+                                    ) {
+                                        Row(
+                                            verticalAlignment = Alignment.CenterVertically
+                                        ) {
+                                            Box {
+                                                Text(
+                                                    text = stringResource(R.string.from),
+                                                    color = Color.Transparent,
+                                                    fontSize = 14.sp,
+                                                    fontWeight = FontWeight.W400
+                                                )
+                                                Text(
+                                                    text = stringResource(R.string.to),
+                                                    color = Color.White.copy(alpha = 0.6f),
+                                                    fontSize = 14.sp,
+                                                    fontWeight = FontWeight.W400,
+                                                    modifier = Modifier.align(Alignment.Center)
+                                                )
+                                            }
+                                            Spacer(modifier = Modifier.width(6.dp))
+                                            Text(
+                                                text = state.timeTo,
+                                                color = Color.White,
+                                                fontSize = 14.sp,
+                                                fontWeight = FontWeight.W400
+                                            )
+                                            Spacer(modifier = Modifier.width(8.dp))
+                                            Image(
+                                                painter = painterResource(id = R.drawable.ic_expand_down),
+                                                contentDescription = "Select time",
+                                                modifier = Modifier.size(12.dp)
+                                            )
+                                        }
+                                    }
                                 }
                             }
 
-                            // To time
-                            Box(
-                                modifier = Modifier
-                                    .wrapContentWidth()
-                                    .clip(RoundedCornerShape(20.dp))
-                                    .background(Color.White.copy(alpha = 0.2f))
-                                    .padding(vertical = 8.dp, horizontal = 12.dp)
-                                    .clickableWithoutIndication {
-                                        viewModel.showTimePickerDialog(TimePickerType.TO_TIME)
-                                    }
-                            ) {
-                                Row(
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Box {
-                                        Text(
-                                            text = stringResource(R.string.from),
-                                            color = Color.Transparent,
-                                            fontSize = 14.sp,
-                                            fontWeight = FontWeight.W400
-                                        )
-                                        Text(
-                                            text = stringResource(R.string.to),
-                                            color = Color.White.copy(alpha = 0.6f),
-                                            fontSize = 14.sp,
-                                            fontWeight = FontWeight.W400,
-                                            modifier = Modifier.align(Alignment.Center)
-                                        )
-                                    }
-                                    Spacer(modifier = Modifier.width(6.dp))
-                                    Text(
-                                        text = state.timeTo,
-                                        color = Color.White,
-                                        fontSize = 14.sp,
-                                        fontWeight = FontWeight.W400
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Image(
-                                        painter = painterResource(id = R.drawable.ic_expand_down),
-                                        contentDescription = "Select time",
-                                        modifier = Modifier.size(12.dp)
-                                    )
-                                }
+                            if (!state.timeToFlashOffEnabled) {
+                                Box(
+                                    modifier = Modifier
+                                        .matchParentSize()
+                                        .background(Color.Black.copy(alpha = 0.5f))
+                                        .pointerInput(Unit) {}
+                                )
                             }
                         }
                     }

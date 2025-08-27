@@ -33,9 +33,18 @@ fun CompassDialComponent(
 ) {
     var previousAngle by remember { mutableFloatStateOf(angle) }
     val adjustedAngle = remember(angle) {
-        val delta = (angle - previousAngle + 540) % 360 - 180
-        previousAngle = (previousAngle + delta + 360) % 360
-        previousAngle
+        // Tính toán góc ngắn nhất để xoay
+        var delta = angle - previousAngle
+        
+        // Xử lý trường hợp xoay qua 0°/360°
+        if (delta > 180) {
+            delta -= 360
+        } else if (delta < -180) {
+            delta += 360
+        }
+        
+        previousAngle = angle
+        angle
     }
     val animatedAngle by animateFloatAsState(
         targetValue = adjustedAngle,
@@ -54,7 +63,8 @@ fun CompassDialComponent(
                 .background(Color.Transparent)
         ) {
             val center = Offset(size.width / 2, size.height / 2)
-            val radius = size.width * 0.4f // Circle radius
+            val minDimension = minOf(size.width, size.height)
+            val radius = minDimension * 0.35f
 
             // Create path for donut shape (full screen minus circle)
             val path = Path().apply {
@@ -78,7 +88,8 @@ fun CompassDialComponent(
 
             // Draw cardinal directions outside the circle
             drawIntoCanvas { canvas ->
-                val directionRadius = radius + 65f // Position text outside the circle
+                val textOffset = (minDimension * 0.08f).coerceAtMost(50f).coerceAtLeast(20f)
+                val directionRadius = radius + textOffset // Position text outside the circle
                 
                 // Draw N, W, E, S labels
                 val directions = listOf(
@@ -99,7 +110,7 @@ fun CompassDialComponent(
                         labelY,
                         android.graphics.Paint().apply {
                             this.color = color.toArgb()
-                            textSize = 80f // Larger text size
+                            textSize = (minDimension * 0.08f).coerceAtMost(60f).coerceAtLeast(24f) // Larger text size
                             textAlign = android.graphics.Paint.Align.CENTER
                             typeface = android.graphics.Typeface.DEFAULT_BOLD
                         }

@@ -44,6 +44,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.flashlight.flashalert.oncall.sms.R
+import com.flashlight.flashalert.oncall.sms.core.utils.SharedPrefs
 import com.flashlight.flashalert.oncall.sms.core.utils.clickableWithoutIndication
 import com.flashlight.flashalert.oncall.sms.ui.theme.InterFontFamily
 import com.ramcosta.composedestinations.annotation.Destination
@@ -261,6 +262,7 @@ fun FeedbackScreen(
                         )
                     )
                     .clickableWithoutIndication {
+                        SharedPrefs.isSubmitFeedback = true
                         navigator.navigateUp()
                     },
                 contentAlignment = Alignment.Center

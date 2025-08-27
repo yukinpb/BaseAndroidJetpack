@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
 import android.hardware.camera2.CameraManager
+import android.os.Build
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -71,6 +72,18 @@ class IncomingCallViewModel : ViewModel() {
         ) == PackageManager.PERMISSION_GRANTED
         
         _state.value = _state.value.copy(hasPhonePermission = hasPermission)
+    }
+
+    fun hasNotificationPermission(context: Context): Boolean {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            ContextCompat.checkSelfPermission(
+                context,
+                Manifest.permission.POST_NOTIFICATIONS
+            ) == PackageManager.PERMISSION_GRANTED
+        } else {
+            // Android 12 trở xuống không cần quyền notification
+            true
+        }
     }
     
     fun toggleFlashEnabled(enabled: Boolean, context: Context) {

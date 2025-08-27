@@ -2,6 +2,7 @@ package com.flashlight.flashalert.oncall.sms.utils
 
 import android.app.Activity
 import android.view.View
+import android.widget.ImageView
 import android.widget.TextView
 import com.flashlight.flashalert.oncall.sms.R
 import com.google.android.gms.ads.LoadAdError
@@ -35,7 +36,15 @@ object AdsUtils {
             }
         }
 
-        adView.mediaView = adView.findViewById(R.id.ad_media)
+        adView.iconView = adView.findViewById<ImageView>(R.id.ad_app_icon)?.apply {
+            nativeAd.icon?.let {
+                setImageDrawable(it.drawable)
+                visibility = View.VISIBLE
+            } ?: run {
+                visibility = View.GONE
+            }
+        }
+
         adView.setNativeAd(nativeAd)
     }
 

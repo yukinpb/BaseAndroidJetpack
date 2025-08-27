@@ -39,56 +39,96 @@ fun LanguageComponent(
     checked: Boolean,
     onCheckedChange: () -> Unit
 ) {
-    Box(
-        modifier = modifier
-            .fillMaxWidth()
-            .border(
-                1.dp, Brush.verticalGradient(
-                    listOf(Color.White.copy(0.25f), Color.White.copy(0.25f))
-                ), RoundedCornerShape(16.dp)
-            )
-            .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFF2F3C55))
-            .padding(12.dp)
-            .clickable(
-                onClick = onCheckedChange,
-                indication = null,
-                interactionSource = remember { MutableInteractionSource() }
-            )
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
+    if (checked) {
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .border(
+                    1.dp, Brush.verticalGradient(
+                        listOf(Color(0xFF12C0FC), Color(0xFF1264C8))
+                    ), RoundedCornerShape(16.dp)
+                )
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color(0xFF15223B))
+                .padding(12.dp)
+                .clickable(
+                    onClick = onCheckedChange,
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                )
         ) {
             Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Image(
-                    painter = painterResource(id = flag),
-                    contentDescription = stringResource(display),
-                    modifier = Modifier.size(32.dp)
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = stringResource(display),
-                    fontSize = 14.sp,
-                    color = Color.White,
-                    fontWeight = FontWeight.W500
-                )
-            }
-            if (checked) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = flag),
+                        contentDescription = stringResource(display),
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(display),
+                        fontSize = 14.sp,
+                        color = Color.White,
+                        fontWeight = FontWeight.W500
+                    )
+                }
                 Image(
                     painter = painterResource(id = R.drawable.ic_language_selected),
                     contentDescription = "Icon Selected",
-                    modifier = Modifier.size(24.dp)
+                    modifier = Modifier.size(16.dp)
                 )
-            } else {
+            }
+        }
+    } else {
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .border(
+                    1.dp, Brush.verticalGradient(
+                        listOf(Color.White.copy(0.25f), Color.White.copy(0.25f))
+                    ), RoundedCornerShape(16.dp)
+                )
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color(0xFF2F3C55))
+                .padding(12.dp)
+                .clickable(
+                    onClick = onCheckedChange,
+                    indication = null,
+                    interactionSource = remember { MutableInteractionSource() }
+                )
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = flag),
+                        contentDescription = stringResource(display),
+                        modifier = Modifier.size(32.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = stringResource(display),
+                        fontSize = 14.sp,
+                        color = Color.White,
+                        fontWeight = FontWeight.W500
+                    )
+                }
                 Image(
                     painter = painterResource(id = R.drawable.ic_language_select),
                     contentDescription = "Icon Select",
                     modifier = Modifier
-                        .size(24.dp)
+                        .size(16.dp)
                         .clickable(
                             onClick = onCheckedChange,
                             indication = null,
@@ -98,6 +138,7 @@ fun LanguageComponent(
             }
         }
     }
+
     Spacer(modifier = Modifier.height(16.dp))
 }
 

@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -60,6 +61,23 @@ fun FlashlightScreen(
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
     val context = LocalContext.current
+
+    val configuration = LocalConfiguration.current
+    val screenHeight = configuration.screenHeightDp
+
+    val smallSpacer = when {
+        screenHeight < 600 -> 16.dp
+        screenHeight < 700 -> 24.dp
+        screenHeight < 900 -> 32.dp
+        else -> 48.dp
+    }
+
+    val largeSpacer = when {
+        screenHeight < 600 -> 24.dp
+        screenHeight < 700 -> 32.dp
+        screenHeight < 900 -> 40.dp
+        else -> 48.dp
+    }
 
     AppOpenManager.getInstance().enableAppResume()
 
@@ -129,7 +147,7 @@ fun FlashlightScreen(
                 )
             }
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(smallSpacer))
 
             // Compass
             CompassComponent(
@@ -160,7 +178,7 @@ fun FlashlightScreen(
                 }
             )
 
-            Spacer(modifier = Modifier.height(32.dp))
+            Spacer(modifier = Modifier.height(smallSpacer))
 
             // Main button
             MainButtonComponent(
@@ -169,7 +187,7 @@ fun FlashlightScreen(
                 onClick = { viewModel.onMainButtonClick() }
             )
 
-            Spacer(modifier = Modifier.height(40.dp))
+            Spacer(modifier = Modifier.height(largeSpacer))
 
             // Mode buttons
             ModeButtonsComponent(
@@ -177,7 +195,7 @@ fun FlashlightScreen(
                 onModeSelected = { viewModel.onModeSelected(it) }
             )
 
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(smallSpacer / 2))
 
             // Strobe speed slider (only show for STROBE mode)
             if (state.selectedMode == FlashlightMode.STROBE) {

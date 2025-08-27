@@ -213,6 +213,11 @@ fun LanguageScreen(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .wrapContentSize()
+                                    .border(
+                                        1.dp, Brush.verticalGradient(
+                                            listOf(Color.White.copy(0.25f), Color.White.copy(0.25f))
+                                        ), RoundedCornerShape(16.dp)
+                                    )
                                     .background(
                                         Color(0xFF2F3C55),
                                         RoundedCornerShape(16.dp)
@@ -253,7 +258,7 @@ fun LanguageScreen(
                                     Image(
                                         painter = painterResource(id = if (englishExpanded) R.drawable.ic_language_expanded else R.drawable.ic_language_expand),
                                         contentDescription = "Expand",
-                                        modifier = Modifier.size(24.dp)
+                                        modifier = Modifier.size(16.dp)
                                     )
                                 }
                             }

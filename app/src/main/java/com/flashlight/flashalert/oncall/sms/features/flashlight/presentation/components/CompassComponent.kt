@@ -60,9 +60,18 @@ fun CompassComponent(
 ) {
     var previousAngle by remember { mutableFloatStateOf(angle) }
     val adjustedAngle = remember(angle) {
-        val delta = (angle - previousAngle + 540) % 360 - 180
-        previousAngle = (previousAngle + delta + 360) % 360
-        previousAngle
+        // Tính toán góc ngắn nhất để xoay
+        var delta = angle - previousAngle
+        
+        // Xử lý trường hợp xoay qua 0°/360°
+        if (delta > 180) {
+            delta -= 360
+        } else if (delta < -180) {
+            delta += 360
+        }
+        
+        previousAngle = angle
+        angle
     }
     val animatedAngle by animateFloatAsState(
         targetValue = adjustedAngle,

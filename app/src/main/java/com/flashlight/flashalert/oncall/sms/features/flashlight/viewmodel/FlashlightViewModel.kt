@@ -11,7 +11,6 @@ import android.hardware.camera2.CameraMetadata
 import android.widget.Toast
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.flashlight.flashalert.oncall.sms.R
 import com.flashlight.flashalert.oncall.sms.core.utils.SharedPrefs
 import com.flashlight.flashalert.oncall.sms.core.utils.getFlashlightMode
 import com.flashlight.flashalert.oncall.sms.core.utils.saveFlashlightMode
@@ -46,12 +45,21 @@ class FlashlightViewModel @Inject constructor(
     }
 
     private fun loadSavedState() {
-        val savedMode = SharedPrefs.getFlashlightMode()
         val savedStrobeSpeed = SharedPrefs.strobeSpeed
-        _state.value = _state.value.copy(
-            selectedMode = savedMode,
-            strobeSpeed = savedStrobeSpeed
-        )
+        if (SharedPrefs.isAutomaticOn) {
+            _state.value = _state.value.copy(
+                selectedMode = FlashlightMode.FLASHLIGHT,
+                strobeSpeed = savedStrobeSpeed,
+                currentState = FlashlightState.ON
+            )
+        } else {
+            val savedMode = SharedPrefs.getFlashlightMode()
+
+            _state.value = _state.value.copy(
+                selectedMode = savedMode,
+                strobeSpeed = savedStrobeSpeed
+            )
+        }
     }
 
     // Starts + stop listening to compass sensors (accelerometer and magnetometer)
@@ -115,10 +123,8 @@ class FlashlightViewModel @Inject constructor(
 
         if (_state.value.selectedMode == mode) {
             _state.value = _state.value.copy(
-                selectedMode = FlashlightMode.NONE,
                 currentState = FlashlightState.OFF
             )
-            SharedPrefs.saveFlashlightMode(FlashlightMode.NONE)
         } else {
             _state.value = _state.value.copy(
                 selectedMode = mode,
@@ -129,15 +135,6 @@ class FlashlightViewModel @Inject constructor(
     }
 
     fun onMainButtonClick() {
-        if (_state.value.selectedMode == FlashlightMode.NONE) {
-            Toast.makeText(
-                context,
-                context.getString(R.string.please_select_a_mode_first),
-                Toast.LENGTH_SHORT
-            ).show()
-            return
-        }
-
         when (_state.value.currentState) {
             FlashlightState.OFF -> {
                 _state.value = _state.value.copy(currentState = FlashlightState.ON)
@@ -183,7 +180,11 @@ class FlashlightViewModel @Inject constructor(
                     .show()
             }
         } catch (e: Exception) {
-            Toast.makeText(context, "Unable to turn on flashlight: ${e.message}", Toast.LENGTH_SHORT)
+            Toast.makeText(
+                context,
+                "Unable to turn on flashlight: ${e.message}",
+                Toast.LENGTH_SHORT
+            )
                 .show()
         }
     }
@@ -195,7 +196,11 @@ class FlashlightViewModel @Inject constructor(
                 isFlashlightOn = false
             }
         } catch (e: Exception) {
-            Toast.makeText(context, "Unable to turn off flashlight: ${e.message}", Toast.LENGTH_SHORT)
+            Toast.makeText(
+                context,
+                "Unable to turn off flashlight: ${e.message}",
+                Toast.LENGTH_SHORT
+            )
                 .show()
         }
     }

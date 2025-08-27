@@ -59,6 +59,24 @@ fun CompassScreen(
         onDispose { viewModel.stopListening() }
     }
 
+    // Check and request location settings when entering the screen
+    LaunchedEffect(Unit) {
+        activity?.let {
+            viewModel.checkAndRequestLocationSettings(it)
+        }
+    }
+
+    // Handle location settings result
+    LaunchedEffect(Unit) {
+        // This will be triggered when returning from GPS settings dialog
+        // We can check if GPS is now enabled and start location updates
+        if (activity != null) {
+            // Small delay to ensure settings are applied
+            kotlinx.coroutines.delay(500)
+            viewModel.startLocationUpdates()
+        }
+    }
+
     // Reset the flag after it's been used
     LaunchedEffect(shouldCenterToCurrentLocation) {
         if (shouldCenterToCurrentLocation) {
@@ -156,7 +174,12 @@ fun CompassScreen(
                     contentDescription = "Direction",
                     modifier = Modifier
                         .size(70.dp)
-                        .clickable { viewModel.toggleDirection() }
+                        .clickable {
+                            viewModel.toggleDirection()
+                            if (state.compass.currentLocation != null) {
+                                shouldCenterToCurrentLocation = true
+                            }
+                        }
                 )
 
                 Image(

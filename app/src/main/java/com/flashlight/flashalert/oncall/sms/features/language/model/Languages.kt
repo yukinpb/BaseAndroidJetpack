@@ -17,12 +17,14 @@ object Languages {
         LanguageItem("en-ZA", R.drawable.english_sa_flag, R.string.language_english_za)
     )
     val languages = listOf(
-        LanguageGroup("en", R.drawable.english_flag, R.string.language_english, englishChildren),
         LanguageGroup("fr", R.drawable.france_flag, R.string.language_france),
+        LanguageGroup("en", R.drawable.english_flag, R.string.language_english, englishChildren),
         LanguageGroup("zh", R.drawable.chinna_flag, R.string.language_china),
         LanguageGroup("in", R.drawable.indo_flag, R.string.language_indonesia),
         LanguageGroup("hi", R.drawable.india_flag, R.string.language_india),
-        LanguageGroup("de", R.drawable.germany_flag, R.string.language_germany)
+        LanguageGroup("de", R.drawable.germany_flag, R.string.language_germany),
+        LanguageGroup("es", R.drawable.spain_flag, R.string.language_spain),
+        LanguageGroup("ja", R.drawable.japan_flag, R.string.language_japan),
     )
 }
 

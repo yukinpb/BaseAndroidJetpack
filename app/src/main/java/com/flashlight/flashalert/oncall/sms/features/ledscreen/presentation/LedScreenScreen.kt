@@ -1,5 +1,7 @@
 package com.flashlight.flashalert.oncall.sms.features.ledscreen.presentation
 
+import android.view.WindowManager
+import androidx.activity.ComponentActivity
 import androidx.activity.compose.LocalActivity
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -20,12 +22,14 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -51,6 +55,31 @@ fun LedScreenScreen(
     val state by viewModel.state.collectAsState()
     val currentMode = state.currentMode
     val activity = LocalActivity.current
+    val context = LocalContext.current
+
+    // Điều chỉnh độ sáng màn hình
+    DisposableEffect(state.brightness) {
+        val window = (context as? androidx.activity.ComponentActivity)?.window
+        val originalBrightness = window?.attributes?.screenBrightness
+        
+        // Đặt độ sáng màn hình dựa trên brightness value (0.0f - 1.0f)
+        // Đảo ngược: càng về phải slider càng tối
+        window?.let { w ->
+            val layoutParams = w.attributes
+            val invertedBrightness = (1.0f - state.brightness).coerceIn(0.01f, 1.0f)
+            layoutParams.screenBrightness = invertedBrightness
+            w.attributes = layoutParams
+        }
+        
+        onDispose {
+            // Khôi phục độ sáng ban đầu khi rời khỏi màn hình
+            window?.let { w ->
+                val layoutParams = w.attributes
+                layoutParams.screenBrightness = originalBrightness ?: WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_NONE
+                w.attributes = layoutParams
+            }
+        }
+    }
 
     Box(
         modifier = modifier.fillMaxSize()
@@ -89,7 +118,7 @@ fun LedScreenScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
-                        color = state.currentColor.copy(alpha = state.brightness),
+                        color = state.currentColor,
                         shape = RoundedCornerShape(0.dp)
                     )
             )

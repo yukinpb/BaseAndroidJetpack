@@ -40,6 +40,7 @@ import com.nlbn.ads.util.AppOpenManager
 import com.nlbn.ads.util.ConsentHelper
 import com.ramcosta.composedestinations.annotation.Destination
 import com.ramcosta.composedestinations.annotation.RootGraph
+import com.ramcosta.composedestinations.generated.destinations.FlashlightScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.IntroScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.LanguageScreenDestination
 import com.ramcosta.composedestinations.generated.destinations.UninstallScreenDestination
@@ -58,16 +59,9 @@ fun SplashScreen(
         initial = NetworkMonitor.isNetworkConnected(context)
     )
 
-    val isFlashOn by viewModel.isFlashOn.collectAsStateWithLifecycle()
-
     // Flash tự động khi vào splash
-    DisposableEffect(Unit) {
+    LaunchedEffect(Unit) {
         viewModel.turnOnFlashlightIfEnabled()
-
-        onDispose {
-            // Tắt flash khi rời khỏi splash
-            viewModel.turnOffFlashlight()
-        }
     }
 
     val openAdId = if (from == AppScreen.FROM_UNINSTALL) {
@@ -81,15 +75,17 @@ fun SplashScreen(
             navigator.navigate(UninstallScreenDestination)
         } else if (SharedPrefs.languageCode == "") {
             navigator.navigate(LanguageScreenDestination(false))
-        } else {
+        } else if (SharedPrefs.isFirstInstall) {
             navigator.navigate(IntroScreenDestination)
+        } else {
+            navigator.navigate(FlashlightScreenDestination)
         }
     }
 
     LaunchedEffect(isConnected) {
         if (isConnected) {
             // Preload language ads
-            AdManager.preloadLanguageAds(context, isConnected)
+            AdManager.preloadLanguageAds(context)
 
             Admob.getInstance().setOpenActivityAfterShowInterAds(false)
             val consentHelper = ConsentHelper.getInstance(context)
@@ -119,7 +115,7 @@ fun SplashScreen(
                         context,
                         openAdId,
                         0,
-                        2000,
+                        4000,
                         true,
                         adCallback
                     )
@@ -142,6 +138,10 @@ fun SplashScreen(
                 LottieAnimationView(context).apply {
                     setAnimation(R.raw.splash_screen)
                     playAnimation()
+                    // Đảm bảo animation fill toàn bộ màn hình
+                    scaleType = android.widget.ImageView.ScaleType.CENTER_CROP
+                    // Hoặc sử dụng FIT_XY để stretch
+                    // scaleType = android.widget.ImageView.ScaleType.FIT_XY
                 }
             },
             modifier = Modifier.fillMaxSize()
@@ -158,6 +158,8 @@ fun SplashScreen(
                     LottieAnimationView(context).apply {
                         setAnimation(R.raw.anim_loading)
                         playAnimation()
+                        // Đảm bảo loading animation hiển thị đúng
+                        scaleType = android.widget.ImageView.ScaleType.FIT_CENTER
                     }
                 }
             )

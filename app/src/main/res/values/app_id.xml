@@ -5,37 +5,34 @@
     <string name="meta_client_token" translatable="false">38723910ff832e7b22640c556255d7a8</string>
     <string name="adjust_token" translatable="false">ADJUST_TOKEN</string>
 
-<!--    &lt;!&ndash;     AdMob App ID Test&ndash;&gt;-->
-<!--    <string name="app_id" translatable="false">ca-app-pub-2857599586325936~6824768925</string>-->
+<!--    &lt;!&ndash;     AdMob App ID &ndash;&gt;-->
+<!--    <string name="app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>-->
 
-<!--    &lt;!&ndash;    Banner Ads Test&ndash;&gt;-->
-<!--    <string name="banner_splash" translatable="false">ca-app-pub-2857599586325936/5955390444</string>-->
-<!--    <string name="banner_splash_uninstall" translatable="false">ca-app-pub-2857599586325936/2178721560</string>-->
+<!--    &lt;!&ndash;    Banner Ads &ndash;&gt;-->
+<!--    <string name="banner_splash_uninstall" translatable="false">ca-app-pub-3940256099942544/6300978111</string>-->
 
-<!--    &lt;!&ndash;     Interstitial Ads Test&ndash;&gt;-->
-<!--    <string name="open_all" translatable="false">ca-app-pub-2857599586325936/9459521187</string>-->
-<!--    <string name="open_splash" translatable="false">ca-app-pub-2857599586325936/2841066544</string>-->
-<!--    <string name="inter_open_uninstall" translatable="false">ca-app-pub-2857599586325936/6441625542</string>-->
-<!--    <string name="inter_start" translatable="false">ca-app-pub-2857599586325936/7431048240</string>-->
-<!--    <string name="inter_periodstart" translatable="false">ca-app-pub-2857599586325936/6117966570</string>-->
-<!--    <string name="inter_navbar" translatable="false">ca-app-pub-2857599586325936/4804884900</string>-->
-<!--    <string name="inter_information" translatable="false">ca-app-pub-2857599586325936/5320115567</string>-->
+<!--    &lt;!&ndash;     Interstitial Ads &ndash;&gt;-->
+<!--    <string name="open_all" translatable="false">ca-app-pub-3940256099942544/9257395921</string>-->
+<!--    <string name="open_splash" translatable="false">ca-app-pub-3940256099942544/9257395921</string>-->
+<!--    <string name="open_splash_uninstall" translatable="false">ca-app-pub-3940256099942544/9257395921</string>-->
+<!--    <string name="inter_back" translatable="false">ca-app-pub-3940256099942544/1033173712</string>-->
+<!--    <string name="inter_inapp" translatable="false">ca-app-pub-3940256099942544/1033173712</string>-->
+<!--    <string name="inter_information" translatable="false">ca-app-pub-3940256099942544/1033173712</string>-->
 
-<!--    &lt;!&ndash;     Native Ads Test&ndash;&gt;-->
-<!--    <string name="native_language" translatable="false">ca-app-pub-2857599586325936/5835136790</string>-->
-<!--    <string name="native_language_selected" translatable="false">ca-app-pub-2857599586325936/4642308771</string>-->
-<!--    <string name="native_intro_1" translatable="false">ca-app-pub-2857599586325936/3239687649</string>-->
-<!--    <string name="native_intro_2" translatable="false">ca-app-pub-2857599586325936/3164725519</string>-->
-<!--    <string name="native_intro_3" translatable="false">ca-app-pub-2857599586325936/5651288055</string>-->
-<!--    <string name="native_intro_4" translatable="false">ca-app-pub-2857599586325936/9259360578</string>-->
-<!--    <string name="native_intro_1_2nd" translatable="false">ca-app-pub-2857599586325936/3239687649</string>-->
-<!--    <string name="native_intro_2_2nd" translatable="false">ca-app-pub-2857599586325936/3164725519</string>-->
-<!--    <string name="native_intro_3_2nd" translatable="false">ca-app-pub-2857599586325936/5651288055</string>-->
-<!--    <string name="native_intro_4_2nd" translatable="false">ca-app-pub-2857599586325936/9259360578</string>-->
-<!--    <string name="native_personalinformation_1" translatable="false">ca-app-pub-2857599586325936/9538562175</string>-->
-<!--    <string name="native_reminder" translatable="false">ca-app-pub-2857599586325936/1926605978</string>-->
-<!--    <string name="native_uninstall_alert" translatable="false">ca-app-pub-2857599586325936/2693952224</string>-->
-<!--    <string name="native_uninstall_survey" translatable="false">ca-app-pub-2857599586325936/9214903208</string>-->
+<!--    &lt;!&ndash;     Native Ads &ndash;&gt;-->
+<!--    <string name="native_language" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+<!--    <string name="native_language_setting" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+<!--    <string name="native_language_selected" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+<!--    <string name="native_intro_1" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+<!--    <string name="native_intro_2" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+<!--    <string name="native_intro_3" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+<!--    <string name="native_navbar" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+<!--    <string name="native_incoming" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+<!--    <string name="native_SMS" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+<!--    <string name="native_Noti" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+<!--    <string name="native_Advanced" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+<!--    <string name="native_keep_user" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
+<!--    <string name="native_survey_user" translatable="false">ca-app-pub-3940256099942544/2247696110</string>-->
 
 <!--     AdMob App ID Test-->
     <string name="app_id" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
@@ -52,9 +49,9 @@
     <string name="inter_information" translatable="false">ca-app-pub-3940256099942544/1033173712</string>
 
 <!--     Native Ads Test-->
-    <string name="native_language" translatable="false">ca-app-pub-2857599586325936/7768612092</string>
+    <string name="native_language" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
     <string name="native_language_setting" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
-    <string name="native_language_selected" translatable="false">ca-app-pub-2857599586325936/2029216167</string>
+    <string name="native_language_selected" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
     <string name="native_intro_1" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
     <string name="native_intro_2" translatable="false">ca-app-pub-3940256099942544/2247696110</string>
     <string name="native_intro_3" translatable="false">ca-app-pub-3940256099942544/2247696110</string>

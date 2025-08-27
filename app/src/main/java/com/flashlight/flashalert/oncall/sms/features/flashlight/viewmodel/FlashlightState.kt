@@ -1,7 +1,6 @@
 package com.flashlight.flashalert.oncall.sms.features.flashlight.viewmodel
 
 enum class FlashlightMode {
-    NONE,
     FLASHLIGHT,
     SOS,
     STROBE
@@ -13,7 +12,7 @@ enum class FlashlightState {
 }
 
 data class FlashlightScreenState(
-    val selectedMode: FlashlightMode = FlashlightMode.NONE,
+    val selectedMode: FlashlightMode = FlashlightMode.FLASHLIGHT,
     val currentState: FlashlightState = FlashlightState.OFF,
     val strobeSpeed: Float = 10f,
     val compassAngle: Float = 0f

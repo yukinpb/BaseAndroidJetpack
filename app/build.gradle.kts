@@ -1,3 +1,8 @@
+import com.android.build.gradle.internal.api.ApkVariantOutputImpl
+import org.gradle.kotlin.dsl.support.uppercaseFirstChar
+import java.text.SimpleDateFormat
+import java.util.Date
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -12,12 +17,35 @@ android {
     namespace = "com.flashlight.flashalert.oncall.sms"
     compileSdk = 35
 
+    applicationVariants.configureEach {
+        val formattedDate = SimpleDateFormat("MM.dd.yyyy").format(Date())
+        // rename the output APK file
+        outputs.configureEach {
+            (this as? ApkVariantOutputImpl)?.outputFileName =
+                "HV50_Flashlight_${versionName}(${versionCode})_${formattedDate}_${buildType.name}.apk"
+        }
+
+        // rename the output AAB file
+        tasks.named(
+            "sign${flavorName.uppercaseFirstChar()}${buildType.name.uppercaseFirstChar()}Bundle",
+            com.android.build.gradle.internal.tasks.FinalizeBundleTask::class.java
+        ) {
+            val file = finalBundleFile.asFile.get()
+            val finalFile =
+                File(
+                    file.parentFile,
+                    "HV50_Flashlight_$versionName($versionCode)_${formattedDate}_${buildType.name}.aab"
+                )
+            finalBundleFile.set(finalFile)
+        }
+    }
+
     defaultConfig {
         applicationId = "com.flashlight.flashalert.oncall.sms"
-        minSdk = 29
+        minSdk = 26
         targetSdk = 36
         versionCode = 1
-        versionName = "1.0"
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -37,6 +37,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flashlight.flashalert.oncall.sms.R
 import com.flashlight.flashalert.oncall.sms.features.settings.presentation.components.RatingDialog
+import com.flashlight.flashalert.oncall.sms.features.settings.presentation.components.SatisfactionDialog
 import com.flashlight.flashalert.oncall.sms.features.settings.presentation.components.SettingItem
 import com.flashlight.flashalert.oncall.sms.features.settings.presentation.components.SettingSection
 import com.flashlight.flashalert.oncall.sms.features.settings.presentation.components.ThanksForFeedbackDialog
@@ -188,6 +189,18 @@ fun SettingsScreen(
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
                 fontFamily = InterFontFamily
+            )
+        }
+
+        // Satisfaction Dialog
+        if (state.showSatisfactionDialog) {
+            SatisfactionDialog(
+                onDismiss = { viewModel.hideSatisfactionDialog() },
+                onNotReallyClick = {
+                    viewModel.onNotReallyClick()
+                    navigator.navigate(FeedbackScreenDestination)
+                },
+                onAbsolutelyClick = { viewModel.onAbsolutelyClick() }
             )
         }
 

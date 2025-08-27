@@ -61,7 +61,7 @@ fun IntroScreen(
         if (adLoadedMap[currentPage] == true) {
             scope.launch {
                 if (currentPage == pages.lastIndex) {
-                    SharedPrefs.isFirstInstall = true
+                    SharedPrefs.isFirstInstall = false
                     viewModel.clearAds()
                     navigator.navigate(FlashlightScreenDestination)
                 } else {

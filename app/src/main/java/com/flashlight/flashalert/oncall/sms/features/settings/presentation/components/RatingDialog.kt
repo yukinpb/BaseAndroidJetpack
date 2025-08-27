@@ -14,6 +14,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -31,8 +33,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
-import androidx.compose.ui.window.DialogProperties
 import com.flashlight.flashalert.oncall.sms.R
 import com.flashlight.flashalert.oncall.sms.ui.theme.InterFontFamily
 
@@ -41,6 +41,7 @@ data class RatingDialogState(
     val isRated: Boolean = false
 )
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun RatingDialog(
     onDismiss: () -> Unit,
@@ -50,12 +51,10 @@ fun RatingDialog(
 ) {
     var ratingState by remember { mutableStateOf(RatingDialogState()) }
 
-    Dialog(
+    ModalBottomSheet(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(
-            dismissOnBackPress = true,
-            dismissOnClickOutside = true
-        )
+        containerColor = Color.Transparent,
+        dragHandle = null
     ) {
         Box(
             modifier = Modifier
@@ -152,7 +151,7 @@ fun RatingDialog(
                 // Button
                 val buttonText = when {
                     ratingState.rating == 0 -> stringResource(R.string.rate)
-                    ratingState.rating <= 3 -> stringResource(R.string.send_feedback)
+                    ratingState.rating <= 4 -> stringResource(R.string.send_feedback)
                     else -> stringResource(R.string.rate_on_google_play)
                 }
 
@@ -175,7 +174,7 @@ fun RatingDialog(
                             )
                             .clickable {
                                 if (ratingState.isRated) {
-                                    if (ratingState.rating <= 3) {
+                                    if (ratingState.rating <= 4) {
                                         onFeedbackClick()
                                     } else {
                                         onRateClick()

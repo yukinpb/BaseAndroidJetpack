@@ -66,7 +66,7 @@ fun IntroComponent(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(1f)
+                    .weight(1.6f)
             ) {
                 Column(
                     modifier = Modifier
@@ -99,7 +99,7 @@ fun IntroComponent(
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = 8.dp),
+                        .padding(vertical = 16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -135,15 +135,16 @@ fun IntroComponent(
                 }
             }
 
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(0.6f),
-                contentAlignment = Alignment.Center
-            ) {
-                if (bottomAd != null) {
+            if (bottomAd != null) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .weight(0.4f),
+                    contentAlignment = Alignment.BottomCenter
+                ) {
                     Box(
                         modifier = Modifier
+                            .padding(bottom = 16.dp)
                             .fillMaxWidth()
                             .background(
                                 color = Color(0xFF242C3B),
@@ -153,16 +154,6 @@ fun IntroComponent(
                     ) {
                         bottomAd.invoke()
                     }
-                } else {
-                    AndroidView(
-                        factory = { context ->
-                            LottieAnimationView(context).apply {
-                                setAnimation(R.raw.anim_swipe_right)
-                                repeatCount = LottieDrawable.INFINITE
-                                playAnimation()
-                            }
-                        }
-                    )
                 }
             }
         }

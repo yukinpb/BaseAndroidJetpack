@@ -5,10 +5,13 @@ import android.content.ContentUris
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
+import android.widget.Toast
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
@@ -35,10 +38,10 @@ import javax.inject.Inject
 data class CameraState(
     val isFlashOn: Boolean = false,
     val currentZoom: Float = 1f,
-    val availableZoomLevels: List<Float> = (5..20).map { it * 0.2f }, // 1.0, 1.2, 1.4, ..., 4.0
     val isCameraReady: Boolean = false,
     val lastPhotoUri: Uri? = null,
-    val showScreenFlash: Boolean = false
+    val showScreenFlash: Boolean = false,
+    val isAutomaticUpdateZoom: Boolean = false
 )
 
 sealed class CameraEvent {
@@ -61,7 +64,20 @@ class CameraViewModel @Inject constructor(
     private var cameraProvider: ProcessCameraProvider? = null
     private lateinit var cameraExecutor: ExecutorService
 
-    fun handleEvent(event: CameraEvent) {
+    private val knownGalleryPackages = listOf(
+        "com.google.android.apps.photos",         // Google Photos
+        "com.sec.android.gallery3d",              // Samsung Gallery
+        "com.miui.gallery",                       // Xiaomi Gallery
+        "com.coloros.gallery3d",                  // OPPO Gallery
+        "com.vivo.gallery",                       // Vivo Gallery
+        "com.sonyericsson.album",                 // Sony Album
+        "com.htc.album",                          // HTC Album
+        "com.lge.gallery",                        // LG Gallery
+        "com.motorola.gallery",                   // Motorola
+        "com.asus.gallery"                        // ASUS
+    )
+
+    fun handleEvent(event: CameraEvent, isAutomaticUpdateZoom: Boolean = false) {
         when (event) {
             is CameraEvent.ToggleFlash -> {
                 _state.value = _state.value.copy(
@@ -71,9 +87,10 @@ class CameraViewModel @Inject constructor(
             }
 
             is CameraEvent.UpdateZoom -> {
-                val clampedZoom = event.zoomLevel.coerceIn(1.0f, 4.0f)
+                val clampedZoom = event.zoomLevel.coerceIn(1.0f, 5.0f)
                 _state.value = _state.value.copy(
-                    currentZoom = clampedZoom
+                    currentZoom = clampedZoom,
+                    isAutomaticUpdateZoom = isAutomaticUpdateZoom
                 )
                 updateZoom()
             }
@@ -105,12 +122,22 @@ class CameraViewModel @Inject constructor(
                     context,
                     Manifest.permission.READ_MEDIA_IMAGES
                 ) == PackageManager.PERMISSION_GRANTED
-            } else {
+            } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                 // Below API 33
                 ContextCompat.checkSelfPermission(
                     context,
                     Manifest.permission.READ_EXTERNAL_STORAGE
                 ) == PackageManager.PERMISSION_GRANTED
+            } else {
+                // API < 29 (Android 10 and below)
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.READ_EXTERNAL_STORAGE
+                ) == PackageManager.PERMISSION_GRANTED &&
+                        ContextCompat.checkSelfPermission(
+                            context,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE
+                        ) == PackageManager.PERMISSION_GRANTED
             }
 
             if (!hasStoragePermission) {
@@ -204,50 +231,155 @@ class CameraViewModel @Inject constructor(
     }
 
     private fun takePhoto() {
-
         val imageCapture = imageCapture
         if (imageCapture == null) {
+            android.util.Log.e("CameraViewModel", "ImageCapture is null")
             return
         }
 
-        // Create file in Pictures directory (gallery)
-        val picturesDir =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                // Android 10+: Sử dụng MediaStore API
+                takePhotoWithMediaStore()
+            } else {
+                // Android 9 trở xuống: Sử dụng File API
+                takePhotoWithFile()
+            }
+        } catch (e: Exception) {
+            android.util.Log.e("CameraViewModel", "Error taking photo: ${e.message}")
+            e.printStackTrace()
+        }
+    }
+
+    private fun takePhotoWithMediaStore() {
+        val contentValues = android.content.ContentValues().apply {
+            put(MediaStore.Images.Media.DISPLAY_NAME, "Flashlight_${System.currentTimeMillis()}.jpg")
+            put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+            put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+        }
+
+        val outputOptions = ImageCapture.OutputFileOptions.Builder(
+            context.contentResolver,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            contentValues
+        ).build()
+
+        imageCapture?.takePicture(
+            outputOptions,
+            cameraExecutor,
+            object : ImageCapture.OnImageSavedCallback {
+                override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                    android.util.Log.d("CameraViewModel", "Photo saved with MediaStore: ${outputFileResults.savedUri}")
+                    
+                    // Create flash effect
+                    viewModelScope.launch {
+                        createFlashEffect()
+                    }
+                    
+                    fetchLastPhotoUri()
+                }
+
+                override fun onError(exception: ImageCaptureException) {
+                    android.util.Log.e("CameraViewModel", "Error saving photo: ${exception.message}")
+                    exception.printStackTrace()
+                }
+            }
+        )
+    }
+
+    private fun takePhotoWithFile() {
+        // Tạo thư mục nếu chưa tồn tại
+        val picturesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
         if (!picturesDir.exists()) {
-            picturesDir.mkdirs()
+            val created = picturesDir.mkdirs()
+            if (!created) {
+                android.util.Log.e("CameraViewModel", "Failed to create Pictures directory")
+                return
+            }
         }
 
         val fileName = "Flashlight_${System.currentTimeMillis()}.jpg"
         val photoFile = File(picturesDir, fileName)
 
+        android.util.Log.d("CameraViewModel", "Saving photo to: ${photoFile.absolutePath}")
+
         val outputOptions = ImageCapture.OutputFileOptions.Builder(photoFile).build()
 
-        imageCapture.takePicture(
+        imageCapture?.takePicture(
             outputOptions,
             cameraExecutor,
             object : ImageCapture.OnImageSavedCallback {
                 override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-                    // Create flash effect to notify user that photo was taken
+                    android.util.Log.d("CameraViewModel", "Photo saved to file: ${photoFile.absolutePath}")
+                    
+                    // Create flash effect
                     viewModelScope.launch {
                         createFlashEffect()
                     }
 
-                    // Notify MediaStore about the new image so it appears in gallery
+                    // Thông báo MediaStore về ảnh mới (quan trọng cho Android 9)
                     try {
+                        // Cách 1: Sử dụng MediaStore.Images.Media.DATA (deprecated nhưng hoạt động trên Android 9)
                         val values = android.content.ContentValues().apply {
                             put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
                             put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-                            put(
-                                MediaStore.Images.Media.RELATIVE_PATH,
-                                Environment.DIRECTORY_PICTURES
-                            )
+                            put(MediaStore.Images.Media.DATA, photoFile.absolutePath)
+                            put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
+                            put(MediaStore.Images.Media.DATE_MODIFIED, System.currentTimeMillis() / 1000)
                         }
 
-                        context.contentResolver.insert(
+                        var uri = context.contentResolver.insert(
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
                             values
                         )
+                        
+                        if (uri != null) {
+                            android.util.Log.d("CameraViewModel", "MediaStore updated successfully with DATA: $uri")
+                        } else {
+                            // Cách 2: Thử sử dụng RELATIVE_PATH (Android 10+ style)
+                            android.util.Log.w("CameraViewModel", "First attempt failed, trying RELATIVE_PATH method")
+                            val values2 = android.content.ContentValues().apply {
+                                put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
+                                put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                                put(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+                                put(MediaStore.Images.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
+                                put(MediaStore.Images.Media.DATE_MODIFIED, System.currentTimeMillis() / 1000)
+                            }
+                            
+                            uri = context.contentResolver.insert(
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                values2
+                            )
+                            
+                            if (uri != null) {
+                                android.util.Log.d("CameraViewModel", "MediaStore updated successfully with RELATIVE_PATH: $uri")
+                            } else {
+                                android.util.Log.e("CameraViewModel", "Both MediaStore update methods failed")
+                                
+                                                                 // Cách 3: Sử dụng MediaScannerConnection để force scan file
+                                 try {
+                                     MediaScannerConnection.scanFile(
+                                         context,
+                                         arrayOf(photoFile.absolutePath),
+                                         arrayOf("image/jpeg"),
+                                         object : MediaScannerConnection.OnScanCompletedListener {
+                                             override fun onScanCompleted(path: String?, uri: Uri?) {
+                                                 if (uri != null) {
+                                                     android.util.Log.d("CameraViewModel", "MediaScanner completed: $uri")
+                                                 } else {
+                                                     android.util.Log.e("CameraViewModel", "MediaScanner failed for path: $path")
+                                                 }
+                                             }
+                                         }
+                                     )
+                                     android.util.Log.d("CameraViewModel", "MediaScanner started")
+                                 } catch (e: Exception) {
+                                     android.util.Log.e("CameraViewModel", "Failed to start MediaScanner: ${e.message}")
+                                 }
+                            }
+                        }
                     } catch (e: Exception) {
+                        android.util.Log.e("CameraViewModel", "Error updating MediaStore: ${e.message}")
                         e.printStackTrace()
                     }
 
@@ -255,6 +387,7 @@ class CameraViewModel @Inject constructor(
                 }
 
                 override fun onError(exception: ImageCaptureException) {
+                    android.util.Log.e("CameraViewModel", "Error saving photo: ${exception.message}")
                     exception.printStackTrace()
                 }
             }
@@ -262,11 +395,34 @@ class CameraViewModel @Inject constructor(
     }
 
     fun openGallery(context: Context) {
-        val intent = Intent(Intent.ACTION_VIEW).apply {
-            setDataAndType(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, "image/*")
-            addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        try {
+            // Try to open the default gallery app directly
+            val intent = Intent(Intent.ACTION_MAIN).apply {
+                addCategory(Intent.CATEGORY_APP_GALLERY)
+                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
+            context.startActivity(intent)
+        } catch (e: Exception) {
+            // Fallback: try to open with MediaStore URI
+            try {
+                val pm = context.packageManager
+
+                for (pkg in knownGalleryPackages) {
+                    try {
+                        val launchIntent = pm.getLaunchIntentForPackage(pkg)
+                        if (launchIntent != null) {
+                            context.startActivity(launchIntent)
+                            Log.d("GalleryLauncher", "Mở gallery bằng: $pkg")
+                            return
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
+            } catch (e2: Exception) {
+                Toast.makeText(context, "Gallery application not found", Toast.LENGTH_SHORT).show()
+            }
         }
-        context.startActivity(intent)
     }
 
     override fun onCleared() {

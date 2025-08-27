@@ -36,6 +36,7 @@ private const val KEY_TIME_TO = "time_to"
 private const val KEY_ENABLE_FLASH_IN_RINGTONE_MODE = "enable_flash_in_ringtone_mode"
 private const val KEY_ENABLE_FLASH_IN_VIBRATE_MODE = "enable_flash_in_vibrate_mode"
 private const val KEY_ENABLE_FLASH_IN_MUTE_MODE = "enable_flash_in_mute_mode"
+private const val KEY_SUBMIT_FEEDBACK = "submit_feedback"
 
 // Settings
 private const val KEY_IS_AUTOMATIC_ON = "is_automatic_on"
@@ -170,14 +171,14 @@ object SharedPrefs {
 
     // Advanced Settings
     var disableWhenPhoneInUse: Boolean
-        get() = prefs.getBoolean(KEY_DISABLE_WHEN_PHONE_IN_USE, true)
+        get() = prefs.getBoolean(KEY_DISABLE_WHEN_PHONE_IN_USE, false)
         set(value) {
             editor.putBoolean(KEY_DISABLE_WHEN_PHONE_IN_USE, value).commit()
             editor.apply()
         }
 
     var batterySaverEnabled: Boolean
-        get() = prefs.getBoolean(KEY_BATTERY_SAVER_ENABLED, true)
+        get() = prefs.getBoolean(KEY_BATTERY_SAVER_ENABLED, false)
         set(value) {
             editor.putBoolean(KEY_BATTERY_SAVER_ENABLED, value).commit()
             editor.apply()
@@ -191,7 +192,7 @@ object SharedPrefs {
         }
 
     var timeToFlashOffEnabled: Boolean
-        get() = prefs.getBoolean(KEY_TIME_TO_FLASH_OFF_ENABLED, true)
+        get() = prefs.getBoolean(KEY_TIME_TO_FLASH_OFF_ENABLED, false)
         set(value) {
             editor.putBoolean(KEY_TIME_TO_FLASH_OFF_ENABLED, value).commit()
             editor.apply()
@@ -249,9 +250,16 @@ object SharedPrefs {
         }
 
     var ledScreenBrightness: Float
-        get() = prefs.getFloat(KEY_LED_SCREEN_BRIGHTNESS, 1.0f)
+        get() = prefs.getFloat(KEY_LED_SCREEN_BRIGHTNESS, 0.5f)
         set(value) {
             editor.putFloat(KEY_LED_SCREEN_BRIGHTNESS, value).commit()
+            editor.apply()
+        }
+
+    var isSubmitFeedback: Boolean
+        get() = prefs.getBoolean(KEY_SUBMIT_FEEDBACK, false)
+        set(value) {
+            editor.putBoolean(KEY_SUBMIT_FEEDBACK, value).commit()
             editor.apply()
         }
 }
@@ -264,7 +272,7 @@ fun SharedPrefs.getFlashlightMode(): FlashlightMode {
     return try {
         FlashlightMode.valueOf(flashlightMode)
     } catch (e: IllegalArgumentException) {
-        FlashlightMode.NONE
+        FlashlightMode.FLASHLIGHT
     }
 }
 

@@ -1,6 +1,7 @@
 package com.flashlight.flashalert.oncall.sms.features.flashalert.presentation
 
 import android.Manifest
+import android.os.Build
 import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -70,14 +71,26 @@ fun IncomingCallScreen(
 
     var showBlinkModeDialog by remember { mutableStateOf(false) }
 
-    // Permission launcher
-    val permissionLauncher = rememberLauncherForActivityResult(
+    // Notification permission launcher
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { isGranted ->
+        if (isGranted) {
+            viewModel.toggleFlashEnabled(true, context)
+        }
+    }
+
+    // Phone permission launcher
+    val phonePermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) {
             viewModel.checkPhonePermission(context)
-            // Now enable flash
-            viewModel.toggleFlashEnabled(true, context)
+            if (!viewModel.hasNotificationPermission(context) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+            } else {
+                viewModel.toggleFlashEnabled(true, context)
+            }
         }
     }
 
@@ -157,11 +170,19 @@ fun IncomingCallScreen(
                 title = stringResource(R.string.enable_flash_for_incoming_call),
                 isEnabled = state.isFlashEnabled,
                 onToggle = { enabled ->
-                    if (enabled && !state.hasPhonePermission) {
-                        // Request READ_PHONE_STATE permission
-                        permissionLauncher.launch(Manifest.permission.READ_PHONE_STATE)
+                    if (enabled) {
+                        if (!state.hasPhonePermission) {
+                            // Request READ_PHONE_STATE permission first
+                            phonePermissionLauncher.launch(Manifest.permission.READ_PHONE_STATE)
+                        } else if (!viewModel.hasNotificationPermission(context) && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            // Android 13+: Request notification permission if not have it
+                            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                        } else {
+                            // Có đủ quyền: Enable flash
+                            viewModel.toggleFlashEnabled(true, context)
+                        }
                     } else {
-                        viewModel.toggleFlashEnabled(enabled, context)
+                        viewModel.toggleFlashEnabled(false, context)
                     }
                 }
             )
@@ -229,7 +250,7 @@ fun IncomingCallScreen(
                         onResetToDefault = {
                             viewModel.resetToDefault()
                         },
-                        modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp)
+                        modifier = Modifier.padding(vertical = 12.dp, horizontal = 10.dp)
                     )
 
                     Box(
